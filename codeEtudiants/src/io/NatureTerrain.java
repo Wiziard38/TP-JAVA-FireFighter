@@ -1,5 +1,10 @@
 package io;
 
 public enum NatureTerrain {
-	EAU, FORET, ROCHE, TERRAIN_LIBRE, HABITAT
+	EAU,
+	FORET, 
+	ROCHE, 
+	TERRAIN_LIBRE, 
+	HABITAT
 }
+
