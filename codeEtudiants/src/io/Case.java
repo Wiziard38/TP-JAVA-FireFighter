@@ -3,7 +3,7 @@ package io;
 public class Case {
 	private int ligne;
 	private int colonne;
-	NatureTerrain  nature;
+	NatureTerrain nature;
 	
 	public int getLigne() {
 		return this.ligne;
