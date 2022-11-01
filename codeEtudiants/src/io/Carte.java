@@ -1,7 +1,7 @@
 package io;
 
 public class Carte {
-	private int tailleCase = 2;
+	private int tailleCase = 10 ;
 	private Case tab[][];
 	private int nbLignes;
 	private int nbColonnes;
