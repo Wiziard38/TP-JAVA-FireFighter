@@ -5,6 +5,11 @@ public class Case {
 	private int colonne;
 	NatureTerrain nature;
 	
+	public Case(int lig, int col, NatureTerrain nature) {
+		this.ligne = lig;
+		this.colonne= col;
+		this.nature = nature;
+	}
 	public int getLigne() {
 		return this.ligne;
 	}

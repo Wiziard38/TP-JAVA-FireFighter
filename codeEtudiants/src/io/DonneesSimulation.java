@@ -16,10 +16,16 @@ public class DonneesSimulation {
 			this.robots[i] = robots[i];
 		}
 	}
+	
 	public Carte getCarte() {
 		return this.carte;
 	}
-	
+	public Incendie[] getIncendies() {
+		return this.incendies;
+	}
+	public Robot[] getRobots() {
+		return this.robots;
+	}
 	public Incendie getIncendie(Case pos) {
 		for (int i = 0; i < this.incendies.length; i++) {
 			if(incendies[i].getPosition().equals(pos)) {
