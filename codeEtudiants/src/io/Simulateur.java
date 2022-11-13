@@ -41,6 +41,10 @@ public class Simulateur implements Simulable{
 		this.dateSimulation += 1;
 	}
 	
+	public long getDateSimulation() {
+		return this.dateSimulation;
+	}
+	
 	public boolean simulationTerminee() {
 		return true;
 	}

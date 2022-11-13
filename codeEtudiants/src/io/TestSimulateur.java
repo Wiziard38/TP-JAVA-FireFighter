@@ -28,17 +28,20 @@ public class TestSimulateur {
         // crée l'invader, en l'associant à la fenêtre graphique précédente
         Simulateur simu = new Simulateur(gui);
         DonneesSimulation jeuDeDonnees = simu.getJeuDeDonnees();
-        Robot robot = jeuDeDonnees.getRobots()[2];
-        //Deplacement ev = new Deplacement(robot,jeuDeDonnees.getCarte(), Direction.NORD,1);
-        //simu.ajouteEvenement(ev);
-        //Deplacement ev2 = new Deplacement(robot,jeuDeDonnees.getCarte(), Direction.NORD,2);
-        //simu.ajouteEvenement(ev2);
+        Robot robot = jeuDeDonnees.getRobots()[0];
+//        Deplacement ev = new Deplacement(robot,jeuDeDonnees.getCarte(), Direction.NORD,1);
+//        simu.ajouteEvenement(ev);
+//        Deplacement ev2 = new Deplacement(robot,jeuDeDonnees.getCarte(), Direction.NORD,2);
+//        simu.ajouteEvenement(ev2);
         
         System.out.println(robot.getNameRobot());
-        Case arrivee = jeuDeDonnees.getCarte().getCase(6, 4);
-        simu.getGraphsRobots().getGraph(robot).display();
-        Path shortestPath = robot.pathFinding(arrivee, simu);
-        System.out.println(shortestPath.getPathWeight("time"));
-        System.out.println(shortestPath);
+        Case arrivee = jeuDeDonnees.getCarte().getCase(6, 3);
+        //simu.getGraphsRobots().getGraph(robot).display();
+//        try {
+        	Path shortestPath = robot.pathFinding(arrivee, simu);
+        	robot.executePath(shortestPath, simu);
+//        } catch(Exception e) {
+//        	System.out.println("pas de chemin !");
+//        }
 	}
 }

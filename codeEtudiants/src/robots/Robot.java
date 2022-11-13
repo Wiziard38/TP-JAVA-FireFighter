@@ -3,6 +3,8 @@ package robots;
 import io.Case;
 import io.NatureTerrain;
 import io.Simulateur;
+import io.Deplacement;
+import io.Direction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +121,40 @@ public abstract class Robot {
 		}
 
 		return dijkstra.getPath(end);
-		
+	}
+	
+	public void executePath(Path path, Simulateur simulateur) {
+		for (Edge edge : path.getEachEdge()) {
+			System.out.println(edge);
+			Direction dir;
+			Object[] array1 = edge.getAttribute("Node1");
+			Object[] array2 = edge.getAttribute("Node2");
+			Case case1 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array1[0], (int)array1[1]);
+			Case case2 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array2[0], (int)array2[1]);
+			if (case1.equals(this.position)) {
+				dir = getDirection(case2);
+			} else {
+				dir = getDirection(case1);
+			}
+			
+			double time = (double) edge.getAttribute("time");
+			long endDate = simulateur.getDateSimulation() + (long) time;
+			
+			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, endDate));
+		}
+	}
+	
+	public Direction getDirection(Case dest) {
+		if (this.position.getLigne() == dest.getLigne()) {
+			if (this.position.getColonne() > dest.getColonne()) {
+				return Direction.SUD;
+			}
+			return Direction.NORD;
+		}
+		if (this.position.getLigne() > dest.getLigne()) {
+			return Direction.OUEST;
+		}
+		return Direction.EST;
 	}
 
 	public abstract boolean peutDeplacer(NatureTerrain terrain);

@@ -39,7 +39,10 @@ public class InitGraphsRobots {
 						if (robot.peutDeplacer(carte.getCase(index_lin - 1, index_col).getNature())) {
 							double time = calculateMeanSpeed(robot, carte.getCase(index_lin, index_col), carte.getCase(index_lin - 1, index_col), cellSize);
 							String cellNorthName = String.format("%x %x", index_lin - 1, index_col);
-							graph.addEdge(cellName + " - " + cellNorthName, cellName, cellNorthName).setAttribute("time", time);													
+							Edge e = graph.addEdge(cellName + " - " + cellNorthName, cellName, cellNorthName);
+							e.setAttribute("time", time);
+							e.setAttribute("Node1", index_lin, index_col);
+							e.setAttribute("Node2", index_lin - 1, index_col);
 						}
 					}
 					
@@ -47,7 +50,10 @@ public class InitGraphsRobots {
 						if (robot.peutDeplacer(carte.getCase(index_lin, index_col - 1).getNature())) {
 							double time = calculateMeanSpeed(robot, carte.getCase(index_lin, index_col), carte.getCase(index_lin, index_col - 1), cellSize);
 							String cellWestName = String.format("%x %x", index_lin, index_col - 1);
-							graph.addEdge(cellName + " - " + cellWestName, cellName, cellWestName).setAttribute("time", time);													
+							Edge e = graph.addEdge(cellName + " - " + cellWestName, cellName, cellWestName);
+							e.setAttribute("time", time);
+							e.setAttribute("Node1", index_lin, index_col);
+							e.setAttribute("Node2", index_lin, index_col - 1);
 						}
 					}
 				}
