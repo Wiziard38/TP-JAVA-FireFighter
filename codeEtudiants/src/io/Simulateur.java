@@ -112,7 +112,7 @@ public class Simulateur implements Simulable{
 			drawRobot(robots[i]);
 		}
 	}
-	
+
 	private void drawRobot(Robot robot) {
 		switch (robot.getType()) {
 		case "DRONE":

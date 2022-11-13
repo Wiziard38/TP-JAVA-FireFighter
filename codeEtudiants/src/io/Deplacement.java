@@ -11,6 +11,7 @@ public class Deplacement extends Evenement {
 		this.robot = robot;
 		this.dir = dir;
 	}
+	
 	@Override
 	public void execute() {
 		if (carte.voisinExiste(robot.getPosition(), dir)) {
