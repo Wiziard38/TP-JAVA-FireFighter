@@ -1,16 +1,13 @@
 package robots;
 
 import io.Case;
+import io.Carte;
 import io.NatureTerrain;
 
 public class RobotDrone extends Robot {
 	
-	public RobotDrone(Case position) {
-		super(position, 100, 10000,"DRONE");
-	}
-	
-	public RobotDrone(Case position, int vitesse) {
-		super(position, vitesse, 10000,"DRONE");
+	public RobotDrone(Case position, Carte carte, int vitesse) {
+		super(position, vitesse, 10000,"DRONE", carte);
 	}
 
 	@Override

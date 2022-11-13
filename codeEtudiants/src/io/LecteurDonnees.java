@@ -209,6 +209,7 @@ public class LecteurDonnees {
     private Robot lireRobot(int i, Carte carte) throws DataFormatException {
         ignorerCommentaires();
         try {
+        	int vitesse = 0;
             int lig = scanner.nextInt();
             int col = scanner.nextInt();
             Case caseInitRobot = carte.getCase(lig, col);
@@ -220,24 +221,38 @@ public class LecteurDonnees {
             // pour lire un flottant:    ("(\\d+(\\.\\d+)?)");
             
             if (s != null) {
-                int vitesse = Integer.parseInt(s);
+                vitesse = Integer.parseInt(s);
             }
             verifieLigneTerminee();
+            
             switch(type) {
             case "DRONE":
-            	Robot robotDrone = new RobotDrone(caseInitRobot);
+            	if (vitesse == 0) {
+            		vitesse = 100;
+            	}
+            	Robot robotDrone = new RobotDrone(caseInitRobot, carte, vitesse);
             	return robotDrone;
+            	
             case "PATTES":
-            	Robot robotPattes = new RobotAPattes(caseInitRobot);
+            	Robot robotPattes = new RobotAPattes(caseInitRobot, carte);
             	return robotPattes;
+            	
             case "ROUES":
-            	Robot robotRoues = new RobotARoues(caseInitRobot);
+            	if (vitesse == 0) {
+            		vitesse = 80;
+            	}
+            	Robot robotRoues = new RobotARoues(caseInitRobot, carte, vitesse);
             	return robotRoues;
+            	
             case "CHENILLES":
-            	Robot robotChenilles = new RobotAChenilles(caseInitRobot);
+            	if (vitesse == 0) {
+            		vitesse = 60;
+            	}
+            	Robot robotChenilles = new RobotAChenilles(caseInitRobot, carte, vitesse);
             	return robotChenilles;
+
             default:
-            	return (Robot)(new RobotAChenilles(caseInitRobot));
+            	return (Robot)(new RobotAChenilles(caseInitRobot, carte));
             }
 
         } catch (NoSuchElementException e) {

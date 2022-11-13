@@ -1,16 +1,13 @@
 package robots;
 
 import io.Case;
+import io.Carte;
 import io.NatureTerrain;
 
 public class RobotARoues extends Robot {
 	
-	public RobotARoues(Case position) {
-		super(position, 80, 5000,"ROUES");
-	}
-	
-	public RobotARoues(Case position, int vitesse) {
-		super(position, vitesse, 5000,"ROUES");
+	public RobotARoues(Case position, Carte carte, int vitesse) {
+		super(position, vitesse, 5000,"ROUES", carte);
 	}
 
 

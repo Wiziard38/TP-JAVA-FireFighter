@@ -17,8 +17,6 @@ import java.util.zip.DataFormatException;
 import gui.*;
 import robots.Robot;
 
-import pathfinder.InitGraphsRobots;
-
 public class Simulateur implements Simulable{
 	
 	private GUISimulator simu;	
@@ -28,7 +26,6 @@ public class Simulateur implements Simulable{
 	private long dateSimulation = 0;
 	private ListEvenement listEvenement = new ListEvenement();
 	private DonneesSimulation jeuDeDonnees;
-	private InitGraphsRobots graphsRobots;
 	
 	public DonneesSimulation getJeuDeDonnees() {
 		return this.jeuDeDonnees;
@@ -68,7 +65,6 @@ public class Simulateur implements Simulable{
 			e.printStackTrace();
 		}
 		
-		this.graphsRobots = new InitGraphsRobots(this.jeuDeDonnees.getCarte(), this.jeuDeDonnees.getRobots());
 	}
 
 	public void next() {
@@ -228,9 +224,5 @@ public class Simulateur implements Simulable{
 			x = 0;
 			y +=this.tailleCasesSimu;
 		}
-	}
-	
-	public InitGraphsRobots getGraphsRobots() {
-		return this.graphsRobots;
 	}
 }

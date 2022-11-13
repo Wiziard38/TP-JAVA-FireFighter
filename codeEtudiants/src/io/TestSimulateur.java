@@ -34,14 +34,10 @@ public class TestSimulateur {
 //        Deplacement ev2 = new Deplacement(robot,jeuDeDonnees.getCarte(), Direction.NORD,2);
 //        simu.ajouteEvenement(ev2);
         
-        System.out.println(robot.getNameRobot());
         Case arrivee = jeuDeDonnees.getCarte().getCase(6, 3);
-        //simu.getGraphsRobots().getGraph(robot).display();
-//        try {
-        	Path shortestPath = robot.pathFinding(arrivee, simu);
-        	robot.executePath(shortestPath, simu);
-//        } catch(Exception e) {
-//        	System.out.println("pas de chemin !");
-//        }
+        
+        robot.getGraph().display();
+        System.out.println(robot.getShortestTimePath(arrivee, simu));
+        robot.goTo(arrivee, simu);
 	}
 }

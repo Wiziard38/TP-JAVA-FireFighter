@@ -1,13 +1,11 @@
 package robots;
 
+import io.Carte;
 import io.Case;
 import io.NatureTerrain;
 import io.Simulateur;
 import io.Deplacement;
 import io.Direction;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.algorithm.Dijkstra.Element;
@@ -15,6 +13,7 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
+import org.graphstream.graph.implementations.SingleGraph;
 
 public abstract class Robot {
 	private Case position;
@@ -23,9 +22,10 @@ public abstract class Robot {
 	private final double tailleReservoir;
 	private double quantiteEau = 0;
 	private boolean occupied;
+	private Graph mapGraph;
 
 	
-	public Robot(Case init_position, int vitesse, double tailleReservoir, String type) {
+	public Robot(Case init_position, int vitesse, double tailleReservoir, String type, Carte carte) {
 		if (vitesse < 0) {
 			throw new IllegalArgumentException("La vitesse doit etre positive !");
 		}
@@ -38,6 +38,7 @@ public abstract class Robot {
 		this.setEauRestante(tailleReservoir);
 		
 		this.occupied = false;
+		this.initGraph(carte);
 	}
 
 	public String getType(){
@@ -57,7 +58,6 @@ public abstract class Robot {
 		}
 	}
 		
-	
 	public double getEauRestante() {
 		return this.quantiteEau;
 	}
@@ -102,9 +102,67 @@ public abstract class Robot {
 	public void setOccupied(boolean state) {
 		this.occupied = state;
 	}
+	
+	private double calculateMeanSpeed(Robot robot, Case firstCell, Case secondCell, int cellSize) {
+		int v1 = robot.getVitesse(firstCell.getNature());
+		int v2 = robot.getVitesse(secondCell.getNature());
+		return (double) (2 * cellSize / (v1 + v2));
+	}
+	
+	private void initGraph(Carte carte) {
+		Graph graph = new SingleGraph("graph robot drone");
+		int nbLignes = carte.getNbLignes();
+		int nbColonnes = carte.getNbColonnes();
+		int cellSize = carte.getTailleCase();
+		
+		for (int index_lin = 0; index_lin < nbLignes; index_lin++) {
+			for (int index_col = 0; index_col < nbColonnes; index_col++) {
+				
+				if (this.peutDeplacer(carte.getCase(index_lin, index_col).getNature())) {
+					String cellName = String.format("%x %x", index_lin, index_col);
+					graph.addNode(cellName).setAttribute("xy", index_lin, index_col);
+					
+					if (index_lin != 0) {
+						if (this.peutDeplacer(carte.getCase(index_lin - 1, index_col).getNature())) {
+							double time = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin - 1, index_col), cellSize);
+							String cellNorthName = String.format("%x %x", index_lin - 1, index_col);
+							Edge e = graph.addEdge(cellName + " - " + cellNorthName, cellName, cellNorthName);
+							e.setAttribute("time", time);
+							e.setAttribute("Node1", index_lin, index_col);
+							e.setAttribute("Node2", index_lin - 1, index_col);
+						}
+					}
+					
+					if (index_col != 0) {
+						if (this.peutDeplacer(carte.getCase(index_lin, index_col - 1).getNature())) {
+							double time = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin, index_col - 1), cellSize);
+							String cellWestName = String.format("%x %x", index_lin, index_col - 1);
+							Edge e = graph.addEdge(cellName + " - " + cellWestName, cellName, cellWestName);
+							e.setAttribute("time", time);
+							e.setAttribute("Node1", index_lin, index_col);
+							e.setAttribute("Node2", index_lin, index_col - 1);
+						}
+					}
+				}
+			}
+		}
+		
+		for (Node n:graph.getEachNode()) {
+			n.setAttribute("label", String.format("(%x;%x)", n.getAttribute("xy")));
+		}
+		for (Edge e:graph.getEachEdge()) {
+			e.setAttribute("label", "" + (double) e.getNumber("time"));
+		}
+	
+		this.mapGraph = graph;
+	}
+	
+	public Graph getGraph() {
+		return this.mapGraph;
+	}
 
 	public Path pathFinding(Case objective, Simulateur simulateur) {
-		Graph graph = simulateur.getGraphsRobots().getGraph(this);
+		Graph graph = this.getGraph();
 		Node start = graph.getNode(String.format("%x %x", this.position.getLigne(), this.position.getColonne()));
 		Node end = graph.getNode(String.format("%x %x", objective.getLigne(), objective.getColonne()));
 		
@@ -123,9 +181,14 @@ public abstract class Robot {
 		return dijkstra.getPath(end);
 	}
 	
-	public void executePath(Path path, Simulateur simulateur) {
+	public double getShortestTimePath(Case objective, Simulateur simulateur) {
+		Path path = this.pathFinding(objective, simulateur);
+		return path.getPathWeight("time");
+	}
+	
+	public void goTo(Case objective, Simulateur simulateur) {
+		Path path = this.pathFinding(objective, simulateur);
 		for (Edge edge : path.getEachEdge()) {
-			System.out.println(edge);
 			Direction dir;
 			Object[] array1 = edge.getAttribute("Node1");
 			Object[] array2 = edge.getAttribute("Node2");
@@ -155,7 +218,7 @@ public abstract class Robot {
 			return Direction.OUEST;
 		}
 		return Direction.EST;
-	}
+	} 
 
 	public abstract boolean peutDeplacer(NatureTerrain terrain);
 
