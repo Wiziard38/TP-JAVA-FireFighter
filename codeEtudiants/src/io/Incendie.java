@@ -5,7 +5,7 @@ public class Incendie {
 	private double eauNecessaire;
 	
 	public Case getPosition() {
-		return this.getPosition();
+		return this.position;
 	}
 	
 	public double getEauNecessaire() {

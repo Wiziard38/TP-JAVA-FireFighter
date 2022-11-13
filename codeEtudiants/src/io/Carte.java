@@ -1,17 +1,18 @@
 package io;
 
 public class Carte {
-	private int tailleCase = 10 ;
+	private int tailleCase;
 	private Case tab[][];
 	private int nbLignes;
 	private int nbColonnes;
 	
-	public Carte(int nbLignes, int nbColonnes) {
+	public Carte(int nbLignes, int nbColonnes, int tailleCase) {
 		this.tab = new Case[nbLignes][nbColonnes];
 		this.nbLignes = nbLignes;
 		this.nbColonnes = nbColonnes;
+		this.tailleCase = tailleCase;
 	}
-	
+
 	public int getNbLignes() {
 		return this.nbLignes;
 	}
@@ -26,6 +27,10 @@ public class Carte {
 	
 	public Case getCase(int lig, int col) {
 		return this.tab[lig][col];
+	}
+	
+	public void setCase(int lig, int col, Case c) {
+		this.tab[lig][col] = c;
 	}
 	
 	public boolean voisinExiste(Case src, Direction dir) {
@@ -46,13 +51,13 @@ public class Carte {
 	public Case getVoisin(Case src, Direction dir) {
 		switch(dir) {
 		case NORD:
-			return this.tab[src.getLigne() - 1][src.getColonne()];
+			return this.tab[src.getLigne()][src.getColonne()-1];
 		case SUD:
-			return this.tab[src.getLigne() + 1][src.getColonne()];
+			return this.tab[src.getLigne() -1][src.getColonne()];
 		case EST:
-			return this.tab[src.getLigne()][src.getColonne() - 1];
+			return this.tab[src.getLigne() + 1][src.getColonne()];
 		case OUEST:
-			return this.tab[src.getLigne()][src.getColonne() + 1];
+			return this.tab[src.getLigne() - 1][src.getColonne()];
 		default:
 			return src;
 		}
