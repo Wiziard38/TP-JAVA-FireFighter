@@ -15,6 +15,7 @@ import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
 
 import gui.*;
+import robots.Robot;
 public class Simulateur implements Simulable{
 	
 	private GUISimulator simu;	

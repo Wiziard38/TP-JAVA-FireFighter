@@ -5,6 +5,12 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
 
+import robots.Robot;
+import robots.RobotAChenilles;
+import robots.RobotAPattes;
+import robots.RobotARoues;
+import robots.RobotDrone;
+
 
 
 /**

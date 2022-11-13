@@ -1,5 +1,7 @@
 package io;
 
+import robots.Robot;
+
 public class Deplacement extends Evenement {
 	Robot robot;
 	Direction dir;

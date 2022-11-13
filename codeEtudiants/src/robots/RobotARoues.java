@@ -1,4 +1,7 @@
-package io;
+package robots;
+
+import io.Case;
+import io.NatureTerrain;
 
 public class RobotARoues extends Robot {
 	
