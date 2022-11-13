@@ -2,6 +2,17 @@ package robots;
 
 import io.Case;
 import io.NatureTerrain;
+import io.Simulateur;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.graphstream.algorithm.Dijkstra;
+import org.graphstream.algorithm.Dijkstra.Element;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.Path;
 
 public abstract class Robot {
 	private Case position;
@@ -88,6 +99,27 @@ public abstract class Robot {
 	
 	public void setOccupied(boolean state) {
 		this.occupied = state;
+	}
+
+	public Path pathFinding(Case objective, Simulateur simulateur) {
+		Graph graph = simulateur.getGraphsRobots().getGraph(this);
+		Node start = graph.getNode(String.format("%x %x", this.position.getLigne(), this.position.getColonne()));
+		Node end = graph.getNode(String.format("%x %x", objective.getLigne(), objective.getColonne()));
+		
+		Dijkstra dijkstra = new Dijkstra(Element.EDGE, "result", "time");
+		dijkstra.init(graph);
+		dijkstra.setSource(start);
+		dijkstra.compute();
+		
+		if (dijkstra.getPathLength(end) == Double.POSITIVE_INFINITY) { // Disconnected nodes
+			return null;
+		}
+		if (!peutDeplacer(objective.getNature())) { // Impossible objective
+			return null;
+		}
+
+		return dijkstra.getPath(end);
+		
 	}
 
 	public abstract boolean peutDeplacer(NatureTerrain terrain);

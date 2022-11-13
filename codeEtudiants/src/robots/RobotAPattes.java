@@ -10,9 +10,9 @@ public class RobotAPattes extends Robot {
 	}
 
 
-
+	@Override
 	public int getVitesse(NatureTerrain nature) {
-		return (nature == NatureTerrain.ROCHE ? 30 : 10);
+		return (nature == NatureTerrain.ROCHE ? 10 : 30);
 	}
 
 	@Override

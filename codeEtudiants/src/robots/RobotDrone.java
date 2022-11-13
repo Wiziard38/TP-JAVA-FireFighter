@@ -28,6 +28,6 @@ public class RobotDrone extends Robot {
 
 	@Override
 	public String getNameRobot() {
-		return "Drone";
+		return "Robot drone";
 	}
 }
