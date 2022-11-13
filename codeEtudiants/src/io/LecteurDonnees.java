@@ -252,7 +252,7 @@ public class LecteurDonnees {
             	return robotChenilles;
 
             default:
-            	return (Robot)(new RobotAChenilles(caseInitRobot, carte));
+            	return (Robot)(new RobotAChenilles(caseInitRobot, carte, 60));
             }
 
         } catch (NoSuchElementException e) {
