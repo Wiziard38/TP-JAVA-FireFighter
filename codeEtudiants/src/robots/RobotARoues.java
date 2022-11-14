@@ -1,8 +1,12 @@
 package robots;
 
 import io.Case;
+
+import java.util.Set;
+
 import io.Carte;
 import io.NatureTerrain;
+import io.Simulateur;
 
 public class RobotARoues extends Robot {
 	
@@ -19,5 +23,9 @@ public class RobotARoues extends Robot {
 	@Override
 	public String getNameRobot() {
 		return "Robot a roues";
+	}
+	
+	public double getClosestWater(Simulateur simulateur) {
+		return 0;
 	}
 }

@@ -226,8 +226,9 @@ public abstract class Robot {
 			return Direction.NORD;
 		}
 		return Direction.SUD;
-	} 
-
+	}
+	
+	public abstract double getClosestWater(Simulateur simulateur);
 	public abstract boolean peutDeplacer(NatureTerrain terrain);
 	public abstract String getNameRobot();
 }

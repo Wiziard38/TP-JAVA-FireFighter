@@ -3,6 +3,7 @@ package robots;
 import io.Case;
 import io.Carte;
 import io.NatureTerrain;
+import io.Simulateur;
 
 public class RobotAPattes extends Robot {
 	
@@ -25,5 +26,7 @@ public class RobotAPattes extends Robot {
 	public String getNameRobot() {
 		return "Robot a pattes";
 	}
-	
+	public double getClosestWater(Simulateur simulateur) {
+		return 0;
+	}
 }
