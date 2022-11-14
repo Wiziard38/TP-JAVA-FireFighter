@@ -34,6 +34,10 @@ public class Simulateur implements Simulable{
 		this.listEvenement.ajouteEvenement(e);
 	}
 	
+	public void ajouteEvenementFin(Evenement e) {
+		this.listEvenement.ajouteFin(e);
+	}
+	
 	public void incrementeDate() {
 		this.dateSimulation += 30;
 	}

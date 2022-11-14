@@ -1,6 +1,7 @@
 package robots;
 
 import io.Carte;
+
 import io.Case;
 import io.NatureTerrain;
 import io.Simulateur;
@@ -14,6 +15,9 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.SingleGraph;
+import io.VerserEau;
+import io.RemplissageReservoir;
+import io.Fini;
 
 public abstract class Robot {
 	private Case position;
@@ -23,7 +27,7 @@ public abstract class Robot {
 	private double quantiteEau = 0;
 	private boolean occupied;
 	private Graph mapGraph;
-
+	private String dernierEventType = "Debut";
 	
 	public Robot(Case init_position, int vitesse, double tailleReservoir, String type, Carte carte) {
 		if (vitesse < 0) {
@@ -40,7 +44,19 @@ public abstract class Robot {
 		this.occupied = false;
 		this.initGraph(carte);
 	}
-
+	
+	public String getDernierEventType() {
+		return this.dernierEventType;
+	}
+	
+	public void setDernierEventType(String s) {
+		this.dernierEventType = s;
+	}
+	
+	public double getQuantiteReservoir() {
+		return this.quantiteEau;
+	}
+	
 	public String getType(){
 		return this.type;
 	}
@@ -188,7 +204,7 @@ public abstract class Robot {
 		return path.getPathWeight("time");
 	}
 	
-	public void goTo(Case objective, Simulateur simulateur) {
+	public void goTo(Case objective, Simulateur simulateur, long eau) {
 		this.occupied = true;
 		Path path = this.pathFinding(objective, simulateur);
 		Case current_pos = this.getPosition();
@@ -213,6 +229,8 @@ public abstract class Robot {
 			
 			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, current_date));
 		}
+		simulateur.ajouteEvenement(new Fini(this,current_date));
+		this.dernierEventType = "Deplacement";
 	}
 	
 	public Direction getDirection(Case origin, Case dest) {
@@ -226,6 +244,20 @@ public abstract class Robot {
 			return Direction.NORD;
 		}
 		return Direction.SUD;
+	}
+	
+	public void deverserEau(Simulateur simu, long eau, long date) {
+		this.occupied = true;
+		VerserEau event = new VerserEau(simu.getJeuDeDonnees().getIncendie(this.position),this,eau, date);
+		simu.ajouteEvenement(event);
+		simu.ajouteEvenement(new Fini(this, date));
+		this.dernierEventType = "VerserEau";
+	}
+	
+	public void rechargerEau(Simulateur simu, long eau, long date) {
+		//Il faudra ajouter le chemin pour aller jusqu'à l'eau
+		RemplissageReservoir event = new RemplissageReservoir(simu.getJeuDeDonnees().getCarte(),this, eau, date);
+		simu.ajouteEvenement(event);
 	}
 	
 	public abstract double getClosestWater(Simulateur simulateur);
