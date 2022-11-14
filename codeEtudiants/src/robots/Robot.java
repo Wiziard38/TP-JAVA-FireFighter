@@ -181,9 +181,9 @@ public abstract class Robot {
 		return dijkstra.getPath(end);
 	}
 	
-	public double getShortestTimePath(Path path) {
+	public double getTimeFromPath(Path path) {
 		if (path == null) {
-			throw new IllegalArgumentException("Path null !"); 
+			return Double.POSITIVE_INFINITY; 
 		}
 		return path.getPathWeight("time");
 	}
@@ -228,7 +228,7 @@ public abstract class Robot {
 		return Direction.SUD;
 	}
 	
-	public abstract double getClosestWater(Simulateur simulateur);
+	public abstract Path getClosestWater(Simulateur simulateur);
 	public abstract boolean peutDeplacer(NatureTerrain terrain);
 	public abstract String getNameRobot();
 }

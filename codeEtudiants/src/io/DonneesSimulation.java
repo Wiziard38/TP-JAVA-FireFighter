@@ -9,7 +9,9 @@ public class DonneesSimulation {
 	private Carte carte;
 	private Incendie[] incendies;
 	private Robot[] robots;
-	private Set<Case> eaux = new HashSet<Case>();
+	private Set<Case> listEaux = new HashSet<Case>();
+	private Set<Case> listVoisins = new HashSet<Case>();
+
 	
 	public DonneesSimulation(Carte carte, int nbIncendie, Incendie incendies[], int nbRobot, Robot robots[] ) {
 		this.carte = carte;
@@ -22,6 +24,7 @@ public class DonneesSimulation {
 			this.robots[i] = robots[i];
 		}
 		initCasesEaux();
+		initCasesVoisins();
 	}
 	
 	public Carte getCarte() {
@@ -43,16 +46,30 @@ public class DonneesSimulation {
 	}
 	
 	public Set<Case> getCasesEaux() {
-		return this.eaux;
+		return this.listEaux;
+	}
+	
+	public Set<Case> getCasesVoisins() {
+		return this.listVoisins;
 	}
 	
 	public void initCasesEaux() {
 		for (int index_lin = 0; index_lin < carte.getNbColonnes(); index_lin++) {
 			for (int index_col = 0; index_col < carte.getNbColonnes(); index_col++) {
 				if (carte.getCase(index_lin, index_col).getNature() == NatureTerrain.EAU) {
-					this.eaux.add(carte.getCase(index_lin, index_col));
+					this.listEaux.add(carte.getCase(index_lin, index_col));
 				}
 			}	
+		}
+	}
+	
+	public void initCasesVoisins() {
+		for (Case waterTile : this.getCasesEaux()) {
+			for (Direction dir : Direction.values()) {
+				if (carte.voisinExiste(waterTile, dir) && carte.getVoisin(waterTile, dir).getNature() != NatureTerrain.EAU) {
+					listVoisins.add(this.carte.getVoisin(waterTile, dir));
+				}
+			}
 		}
 	}
 }
