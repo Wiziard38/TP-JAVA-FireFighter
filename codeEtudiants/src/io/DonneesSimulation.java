@@ -1,5 +1,7 @@
 package io;
 
+import robots.Robot;
+
 public class DonneesSimulation {
 	private Carte carte;
 	private Incendie[] incendies;

@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 
 import gui.GUISimulator;
 import gui.ImageElement;
+import robots.Robot;
 
 public class TestSimulateur {
 
