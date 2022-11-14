@@ -140,21 +140,21 @@ public class Simulateur implements Simulable{
 		case "CHENILLES":
 			ImageElement imageChenille = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
-					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_chenille.jpeg",(int)Math.round(this.tailleCasesSimu*0.7),
+					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_chenilles.png",(int)Math.round(this.tailleCasesSimu*0.7),
 					(int)Math.round(this.tailleCasesSimu*0.7),this.simu);
 	        this.simu.addGraphicalElement(imageChenille);
 	        break;
 		case "PATTES":
 			ImageElement imagePattes = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
-					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_patte.jpg",(int)Math.round(this.tailleCasesSimu*0.7),
+					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_pattes.png",(int)Math.round(this.tailleCasesSimu*0.7),
 					(int)Math.round(this.tailleCasesSimu*0.7),this.simu);
 	        this.simu.addGraphicalElement(imagePattes);
 	        break;
 		case "ROUES":
 			ImageElement image = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
-					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_roues.jpg",(int)Math.round(this.tailleCasesSimu*0.7),
+					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_roues.png",(int)Math.round(this.tailleCasesSimu*0.7),
 					(int)Math.round(this.tailleCasesSimu*0.7),this.simu);
 	        this.simu.addGraphicalElement(image);
 	        break;

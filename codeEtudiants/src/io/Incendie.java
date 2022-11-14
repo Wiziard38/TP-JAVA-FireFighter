@@ -3,6 +3,21 @@ package io;
 public class Incendie {
 	private Case position;
 	private double eauNecessaire;
+	private boolean traite;
+	
+	public Incendie(Case pos, double eau) {
+		this.eauNecessaire = eau;
+		this.position = pos;
+		this.traite = false;
+	}
+	
+	public boolean getTraite() {
+		return this.traite;
+	}
+	
+	public void setTraite(boolean val) {
+		this.traite = val;
+	}
 	
 	public Case getPosition() {
 		return this.position;
@@ -10,11 +25,6 @@ public class Incendie {
 	
 	public double getEauNecessaire() {
 		return this.eauNecessaire;
-	}
-	
-	public Incendie(Case pos, double eau) {
-		this.eauNecessaire = eau;
-		this.position = pos;
 	}
 	
 	public void setPosition(Case newPos) {
