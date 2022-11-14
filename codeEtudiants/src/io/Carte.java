@@ -12,7 +12,7 @@ public class Carte {
 		this.nbColonnes = nbColonnes;
 		this.tailleCase = tailleCase;
 	}
-
+	
 	public int getNbLignes() {
 		return this.nbLignes;
 	}
@@ -36,13 +36,13 @@ public class Carte {
 	public boolean voisinExiste(Case src, Direction dir) {
 		switch(dir) {
 		case NORD:
-			return src.getLigne() - 1> 0;
+			return src.getLigne() - 1>= 0;
 		case SUD:
-			return src.getLigne() + 1 < this.nbLignes;
+			return src.getLigne() + 1 <= this.nbLignes;
 		case EST:
-			return src.getColonne() - 1 > 0;
+			return src.getColonne() + 1 >= 0;
 		case OUEST:
-			return src.getColonne() + 1 < this.nbColonnes;
+			return src.getColonne() - 1 <= this.nbColonnes;
 		default:
 			return false;
 		}
@@ -51,13 +51,13 @@ public class Carte {
 	public Case getVoisin(Case src, Direction dir) {
 		switch(dir) {
 		case NORD:
-			return this.tab[src.getLigne()][src.getColonne()-1];
+			return this.tab[src.getLigne()-1][src.getColonne()];
 		case SUD:
-			return this.tab[src.getLigne() -1][src.getColonne()];
+			return this.tab[src.getLigne()+1][src.getColonne()];
 		case EST:
-			return this.tab[src.getLigne() + 1][src.getColonne()];
+			return this.tab[src.getLigne()][src.getColonne()+1];
 		case OUEST:
-			return this.tab[src.getLigne() - 1][src.getColonne()];
+			return this.tab[src.getLigne()][src.getColonne()-1];
 		default:
 			return src;
 		}
