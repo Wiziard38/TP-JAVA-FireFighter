@@ -35,7 +35,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void incrementeDate() {
-		this.dateSimulation += 1;
+		this.dateSimulation += 30;
 	}
 	
 	public long getDateSimulation() {
@@ -70,13 +70,13 @@ public class Simulateur implements Simulable{
 		incrementeDate();
 		boolean flag;
 		if (this.listEvenement.getPremier() != null) {
-			flag = this.listEvenement.getPremier().getDate() == this.dateSimulation;
+			flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation;
 			while (flag) {
 				this.listEvenement.getPremier().execute();
 				this.listEvenement.suppPremier();
 				System.out.println(this.listEvenement.getPremier());
 				if (this.listEvenement.getPremier() != null) {
-					flag = this.listEvenement.getPremier().getDate() == this.dateSimulation; 
+					flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation; 
 				}
 				else {
 					flag = false;
