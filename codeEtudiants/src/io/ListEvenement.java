@@ -24,7 +24,7 @@ public class ListEvenement {
 			}
 			else {
 				while (evCourant.getSuivant() != null) {
-					if (e.getDate() <= evCourant.getSuivant().getDate()) {
+					if (e.getDate() > evCourant.getSuivant().getDate()) {
 						evCourant = evCourant.getSuivant();
 					}
 					else {
