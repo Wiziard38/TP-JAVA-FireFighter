@@ -110,13 +110,13 @@ public abstract class Robot {
 	}
 	
 	private void initGraph(Carte carte) {
-		Graph graph = new SingleGraph("graph robot drone");
+		Graph graph = new SingleGraph("graph");
 		int nbLignes = carte.getNbLignes();
 		int nbColonnes = carte.getNbColonnes();
 		int cellSize = carte.getTailleCase();
 		
-		for (int index_lin = 0; index_lin < nbLignes; index_lin++) {
-			for (int index_col = 0; index_col < nbColonnes; index_col++) {
+		for (int index_col = 0; index_col < nbColonnes; index_col++) {
+			for (int index_lin = 0; index_lin < nbLignes; index_lin++) {
 				
 				if (this.peutDeplacer(carte.getCase(index_lin, index_col).getNature())) {
 					String cellName = String.format("%x %x", index_lin, index_col);
@@ -181,8 +181,10 @@ public abstract class Robot {
 		return dijkstra.getPath(end);
 	}
 	
-	public double getShortestTimePath(Case objective, Simulateur simulateur) {
-		Path path = this.pathFinding(objective, simulateur);
+	public double getShortestTimePath(Path path) {
+		if (path == null) {
+			throw new IllegalArgumentException("Path null !"); 
+		}
 		return path.getPathWeight("time");
 	}
 	
@@ -205,25 +207,25 @@ public abstract class Robot {
 				dir = getDirection(case2, case1);
 				current_pos = case1;
 			}
-			
+						
 			double time = (double) edge.getAttribute("time");
-			long dateEvent = current_date + (long) time;
+			current_date += (long) time;
 			
-			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, dateEvent));
+			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, current_date));
 		}
 	}
 	
 	public Direction getDirection(Case origin, Case dest) {
-		if (this.position.getLigne() == dest.getLigne()) {
-			if (this.position.getColonne() > dest.getColonne()) {
-				return Direction.SUD;
+		if (origin.getLigne() == dest.getLigne()) {
+			if (origin.getColonne() > dest.getColonne()) {
+				return Direction.OUEST;
 			}
+			return Direction.EST;
+		}
+		if (origin.getLigne() > dest.getLigne()) {
 			return Direction.NORD;
 		}
-		if (this.position.getLigne() > dest.getLigne()) {
-			return Direction.OUEST;
-		}
-		return Direction.EST;
+		return Direction.SUD;
 	} 
 
 	public abstract boolean peutDeplacer(NatureTerrain terrain);
