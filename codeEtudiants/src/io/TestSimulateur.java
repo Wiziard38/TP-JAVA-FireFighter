@@ -29,6 +29,8 @@ public class TestSimulateur {
         Simulateur simu = new Simulateur(gui);
         DonneesSimulation jeuDeDonnees = simu.getJeuDeDonnees();
         Robot robot = jeuDeDonnees.getRobots()[0];
+        ChefPompier chef= new ChefPompier(simu,jeuDeDonnees,jeuDeDonnees.getIncendies());
+        chef.start();
 //        Deplacement ev = new Deplacement(robot,jeuDeDonnees.getCarte(), Direction.OUEST,1);
 //        simu.ajouteEvenement(ev);
 //        Deplacement ev13 = new Deplacement(jeuDeDonnees.getRobots()[1],jeuDeDonnees.getCarte(), Direction.NORD,1);
@@ -50,7 +52,6 @@ public class TestSimulateur {
 //        Deplacement ev11 = new Deplacement(robot,jeuDeDonnees.getCarte(), Direction.OUEST, 9);
 //        simu.ajouteEvenement(ev11);
 //        VerserEau ev12 = new VerserEau(jeuDeDonnees.getIncendie(jeuDeDonnees.getCarte().getCase(6, 1)),robot, 10000, 10);
-//        simu.ajouteEvenement(ev12); 
-        robot.goTo(jeuDeDonnees.getCarte().getCase(5, 5), simu);
+//        simu.ajouteEvenement(ev12);
 	}
 }

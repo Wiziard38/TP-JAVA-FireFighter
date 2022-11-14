@@ -173,7 +173,7 @@ public class Simulateur implements Simulable{
 	
 	private void drawEau() {
 		
-        ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_eau.jpeg",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
+        ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_eau.jpg",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
         this.simu.addGraphicalElement(image);
         if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
@@ -185,7 +185,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawForet() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_foret.jpeg",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_foret.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
         this.simu.addGraphicalElement(image);
         if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
@@ -197,7 +197,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawHabitat() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"petite-maison.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_habitat.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
         this.simu.addGraphicalElement(image);
         if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
@@ -209,7 +209,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawRoche() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_rocher.jpg",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_rocher.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
         this.simu.addGraphicalElement(image);
         if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
@@ -221,7 +221,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawTerrainLibre() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_terrain_libre.jpg",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_terrain_libre.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
         this.simu.addGraphicalElement(image);
         if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;

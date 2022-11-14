@@ -187,6 +187,7 @@ public abstract class Robot {
 	}
 	
 	public void goTo(Case objective, Simulateur simulateur) {
+		this.occupied = true;
 		Path path = this.pathFinding(objective, simulateur);
 		Case current_pos = this.getPosition();
 		long current_date = simulateur.getDateSimulation();
