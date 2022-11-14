@@ -188,26 +188,31 @@ public abstract class Robot {
 	
 	public void goTo(Case objective, Simulateur simulateur) {
 		Path path = this.pathFinding(objective, simulateur);
+		Case current_pos = this.getPosition();
+		long current_date = simulateur.getDateSimulation();
+		
 		for (Edge edge : path.getEachEdge()) {
 			Direction dir;
 			Object[] array1 = edge.getAttribute("Node1");
 			Object[] array2 = edge.getAttribute("Node2");
 			Case case1 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array1[0], (int)array1[1]);
 			Case case2 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array2[0], (int)array2[1]);
-			if (case1.equals(this.position)) {
-				dir = getDirection(case2);
+			if (case1.equals(current_pos)) {
+				dir = getDirection(case1, case2);
+				current_pos = case2;
 			} else {
-				dir = getDirection(case1);
+				dir = getDirection(case2, case1);
+				current_pos = case1;
 			}
 			
 			double time = (double) edge.getAttribute("time");
-			long endDate = simulateur.getDateSimulation() + (long) time;
+			long dateEvent = current_date + (long) time;
 			
-			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, endDate));
+			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, dateEvent));
 		}
 	}
 	
-	public Direction getDirection(Case dest) {
+	public Direction getDirection(Case origin, Case dest) {
 		if (this.position.getLigne() == dest.getLigne()) {
 			if (this.position.getColonne() > dest.getColonne()) {
 				return Direction.SUD;
