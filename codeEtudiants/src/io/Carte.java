@@ -63,4 +63,17 @@ public class Carte {
 		}
 	}
 	
+	public Direction getDirection(Case origin, Case dest) {
+		if (origin.getLigne() == dest.getLigne()) {
+			if (origin.getColonne() > dest.getColonne()) {
+				return Direction.OUEST;
+			}
+			return Direction.EST;
+		}
+		if (origin.getLigne() > dest.getLigne()) {
+			return Direction.NORD;
+		}
+		return Direction.SUD;
+	}
+	
 }

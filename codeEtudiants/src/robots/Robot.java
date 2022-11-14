@@ -103,12 +103,6 @@ public abstract class Robot {
 		this.occupied = state;
 	}
 	
-	private double calculateMeanSpeed(Robot robot, Case firstCell, Case secondCell, int cellSize) {
-		int v1 = robot.getVitesse(firstCell.getNature());
-		int v2 = robot.getVitesse(secondCell.getNature());
-		return (double) (2 * cellSize / (v1 + v2));
-	}
-	
 	private void initGraph(Carte carte) {
 		Graph graph = new SingleGraph("graph");
 		int nbLignes = carte.getNbLignes();
@@ -157,13 +151,19 @@ public abstract class Robot {
 		this.mapGraph = graph;
 	}
 	
+	private double calculateMeanSpeed(Robot robot, Case firstCell, Case secondCell, int cellSize) {
+		int v1 = robot.getVitesse(firstCell.getNature());
+		int v2 = robot.getVitesse(secondCell.getNature());
+		return (double) (2 * cellSize / (v1 + v2));
+	}
+
 	public Graph getGraph() {
 		return this.mapGraph;
 	}
-
+	
 	public Path pathFinding(Case objective, Simulateur simulateur) {
 		Graph graph = this.getGraph();
-		Node start = graph.getNode(String.format("%x %x", this.position.getLigne(), this.position.getColonne()));
+		Node start = graph.getNode(String.format("%x %x", this.getPosition().getLigne(), this.getPosition().getColonne()));
 		Node end = graph.getNode(String.format("%x %x", objective.getLigne(), objective.getColonne()));
 		
 		Dijkstra dijkstra = new Dijkstra(Element.EDGE, "result", "time");
@@ -189,22 +189,26 @@ public abstract class Robot {
 	}
 	
 	public void goTo(Case objective, Simulateur simulateur) {
-		this.occupied = true;
 		Path path = this.pathFinding(objective, simulateur);
+		execPath(path, simulateur);
+	}
+	
+	private void execPath(Path shortestPath, Simulateur simulateur) {
+		this.setOccupied(true);
 		Case current_pos = this.getPosition();
 		long current_date = simulateur.getDateSimulation();
 		
-		for (Edge edge : path.getEachEdge()) {
+		for (Edge edge : shortestPath.getEachEdge()) {
 			Direction dir;
 			Object[] array1 = edge.getAttribute("Node1");
 			Object[] array2 = edge.getAttribute("Node2");
 			Case case1 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array1[0], (int)array1[1]);
 			Case case2 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array2[0], (int)array2[1]);
 			if (case1.equals(current_pos)) {
-				dir = getDirection(case1, case2);
+				dir = simulateur.getJeuDeDonnees().getCarte().getDirection(case1, case2);
 				current_pos = case2;
 			} else {
-				dir = getDirection(case2, case1);
+				dir = simulateur.getJeuDeDonnees().getCarte().getDirection(case2, case1);
 				current_pos = case1;
 			}
 						
@@ -213,19 +217,6 @@ public abstract class Robot {
 			
 			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, current_date));
 		}
-	}
-	
-	public Direction getDirection(Case origin, Case dest) {
-		if (origin.getLigne() == dest.getLigne()) {
-			if (origin.getColonne() > dest.getColonne()) {
-				return Direction.OUEST;
-			}
-			return Direction.EST;
-		}
-		if (origin.getLigne() > dest.getLigne()) {
-			return Direction.NORD;
-		}
-		return Direction.SUD;
 	}
 	
 	public abstract Path getClosestWater(Simulateur simulateur);
