@@ -1,4 +1,5 @@
 package io;
+import robots.Robot;
 
 public class VerserEau extends Evenement {
 	private Incendie incendie;
