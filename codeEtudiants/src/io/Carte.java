@@ -38,11 +38,11 @@ public class Carte {
 		case NORD:
 			return src.getLigne() - 1>= 0;
 		case SUD:
-			return src.getLigne() + 1 <= this.nbLignes;
+			return src.getLigne() + 1 <= this.nbLignes - 1;
 		case EST:
 			return src.getColonne() + 1 >= 0;
 		case OUEST:
-			return src.getColonne() - 1 <= this.nbColonnes;
+			return src.getColonne() - 1 <= this.nbColonnes - 1;
 		default:
 			return false;
 		}
