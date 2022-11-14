@@ -81,6 +81,7 @@ public class LecteurDonnees {
             for (int lig = 0; lig < nbLignes; lig++) {
                 for (int col = 0; col < nbColonnes; col++) {
                 	carte.setCase(lig,col,lireCase(lig,col));
+
                 }
             }
             
@@ -149,7 +150,6 @@ public class LecteurDonnees {
      */
     private Incendie lireIncendie(int i, Carte carte) throws DataFormatException {
         ignorerCommentaires();
-        System.out.print("Incendie " + i + ": ");
 
         try {
             int lig = scanner.nextInt();
@@ -160,9 +160,6 @@ public class LecteurDonnees {
                         + "nb litres pour eteindre doit etre > 0");
             }
             verifieLigneTerminee();
-            		
-            System.out.println("position = (" + lig + "," + col
-                    + ");\t intensite = " + intensite);
             Case case_incendie = carte.getCase(lig, col);
             Incendie incendie = new Incendie(case_incendie, intensite);
             return incendie;
@@ -182,7 +179,6 @@ public class LecteurDonnees {
         try {
             int nbRobots = scanner.nextInt();
             Robot[] robots= new Robot[nbRobots];
-            System.out.println("Nb de robots = " + nbRobots);
             for (int i = 0; i < nbRobots; i++) {
                 Robot robot =lireRobot(i, carte);
                 robots[i] = robot;

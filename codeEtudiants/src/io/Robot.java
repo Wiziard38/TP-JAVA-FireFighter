@@ -76,7 +76,6 @@ public abstract class Robot {
 
 
 	public abstract boolean peutDeplacer(NatureTerrain terrain);
-
 	public abstract String getNameRobot();
 }
 

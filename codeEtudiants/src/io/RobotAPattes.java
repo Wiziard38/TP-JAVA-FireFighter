@@ -21,4 +21,5 @@ public class RobotAPattes extends Robot {
 	public String getNameRobot() {
 		return "Robot a pattes";
 	}
+	
 }

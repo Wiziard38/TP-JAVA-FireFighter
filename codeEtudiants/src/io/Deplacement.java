@@ -1,9 +1,9 @@
 package io;
 
 public class Deplacement extends Evenement {
-	Robot robot;
-	Direction dir;
-	Carte carte;
+	private Robot robot;
+	private Direction dir;
+	private Carte carte;
 	
 	public Deplacement(Robot robot, Carte carte,Direction dir, long date ) {
 		super(date);
@@ -16,12 +16,11 @@ public class Deplacement extends Evenement {
 	public void execute() {
 		if (carte.voisinExiste(robot.getPosition(), dir)) {
 			Case caseFin = carte.getVoisin(robot.getPosition(), dir);
-			if (robot.peutDeplacer(caseFin.getNature())) {
-				robot.setPosition(caseFin);
-			}
-			else {
-				System.out.println("Déplacement impossible");
-			}
+			System.out.println("lig: "+caseFin.getLigne()+" col: "+caseFin.getColonne()+" type: "+caseFin.getNature());
+			robot.setPosition(caseFin);
+		}
+		else {
+			System.out.println("Impossible de se déplacer");
 		}
 	}
 

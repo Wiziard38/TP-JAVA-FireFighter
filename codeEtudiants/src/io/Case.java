@@ -21,4 +21,8 @@ public class Case {
 	public NatureTerrain getNature() {
 		return this.nature;
 	}
+	
+	public boolean equal(Case caseATester) {
+		return this.ligne == caseATester.getLigne() & this.colonne == caseATester.getColonne();
+	}
 }

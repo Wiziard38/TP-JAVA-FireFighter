@@ -13,7 +13,7 @@ public class RobotARoues extends Robot {
 
 	@Override
 	public boolean peutDeplacer(NatureTerrain terrain) {
-		return (terrain == NatureTerrain.TERRAIN_LIBRE || terrain == NatureTerrain.HABITAT);
+		return (terrain == NatureTerrain.TERRAIN_LIBRE | terrain == NatureTerrain.HABITAT);
 	}
 
 	@Override
