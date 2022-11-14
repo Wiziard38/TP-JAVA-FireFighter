@@ -5,7 +5,7 @@ import io.Carte;
 import io.NatureTerrain;
 import io.Simulateur;
 
-public class RobotAChenilles extends Robot {
+public class RobotAChenilles extends RobotTerrestre {
 	
 	public RobotAChenilles(Case position, Carte carte, int vitesse) {
 		super(position, vitesse, 2000,"CHENILLES", carte);
@@ -32,8 +32,5 @@ public class RobotAChenilles extends Robot {
 	@Override
 	public String getNameRobot() {
 		return "Robot a chenilles";
-	}
-	public double getClosestWater(Simulateur simulateur) {
-		return 0;
 	}
 }

@@ -8,10 +8,10 @@ import io.Carte;
 import io.NatureTerrain;
 import io.Simulateur;
 
-public class RobotARoues extends Robot {
+public class RobotARoues extends RobotTerrestre {
 	
 	public RobotARoues(Case position, Carte carte, int vitesse) {
-		super(position, vitesse, 5000,"ROUES", carte);
+		super(position, vitesse, 5000, "ROUES", carte);
 	}
 
 
@@ -23,9 +23,5 @@ public class RobotARoues extends Robot {
 	@Override
 	public String getNameRobot() {
 		return "Robot a roues";
-	}
-	
-	public double getClosestWater(Simulateur simulateur) {
-		return 0;
 	}
 }
