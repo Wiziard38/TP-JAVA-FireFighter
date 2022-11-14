@@ -4,17 +4,16 @@ import robots.Robot;
 public class ChefPompier {
 	private Simulateur simu;
 	private DonneesSimulation jeuDeDonnees;
-	private Incendie incendiesTraites[];
 	
-	public ChefPompier(Simulateur simu, DonneesSimulation jeuDeDonnees, Incendie[] incendiesTraites) {
-		this.incendiesTraites = incendiesTraites;
+	public ChefPompier(Simulateur simu, DonneesSimulation jeuDeDonnees) {
 		this.jeuDeDonnees = jeuDeDonnees;
 		this.simu = simu;
 	}
 	private Incendie resteFeu() {
-		for (int i = 0; i<this.jeuDeDonnees.getIncendies().length; i++) {
-			if (this.jeuDeDonnees.getIncendies()[i].getEauNecessaire() != 0) {
-				return jeuDeDonnees.getIncendies()[i];
+		for (Incendie incendie : jeuDeDonnees.getIncendies()) {
+			if (incendie.getEauNecessaire() != 0 && !incendie.getTraite()) {
+				incendie.setTraite(true);
+				return incendie;
 			}
 		}
 		return null;
@@ -36,6 +35,7 @@ public class ChefPompier {
 				robotTraite= getRobotPret(incendieATraite.getPosition());
 			}
 			robotTraite.goTo(incendieATraite.getPosition(), simu);
+			incendieATraite = resteFeu();
 		}
 	}
 }
