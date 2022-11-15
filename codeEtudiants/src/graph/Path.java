@@ -7,6 +7,10 @@ import java.util.List;
 public class Path {
 	private List<Node> listNodes = new ArrayList<Node>();
 	
+	public Path(Node firstNode) {
+		this.addNode(firstNode);
+	}
+	
 	public void addNode(Node nodeToAdd) {
 		listNodes.add(nodeToAdd);
 	}

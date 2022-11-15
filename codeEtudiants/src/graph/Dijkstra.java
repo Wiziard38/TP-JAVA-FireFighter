@@ -1,46 +1,36 @@
 package graph;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import io.Carte;
+import io.Case;
 
 public class Dijkstra {
-	private static final int HashSet = 0;
-	private Node source;
-	private Node target;
-	private Graph myGraph;
-	private Map<Node, Long> treeMap;
+	private Node source = null;
+	private Graph myGraph = null;
+	private Map<Node, ResultatsPathFinder> treeMap = null;
 	
-	public Dijkstra(Graph graph, Node source) {
-		this.myGraph = graph;
-		this.source = source;	
+	public Dijkstra() {
 	}
 
-	public Node getSource() {
-		return source;
-	}
-	
-	public Node getTarget() {
-		return this.target;
-	}
-	
-	public void setTarget(Node node) {
-		this.target = node;
-	}
-	
 	public void init(Graph graph) {
 		this.myGraph = graph;
 		for (Node node : graph.getIte()) {
-			treeMap.put(node, Long.MAX_VALUE);
+			treeMap.put(node, new ResultatsPathFinder(new Path(node), Long.MAX_VALUE));
 		}
 	}
 	
-	
+	public void setSource(Case source) {
+		if (this.myGraph == null)
+			throw new IllegalArgumentException("Must init first");
+		this.source = this.myGraph.getNodeFromCase(source);
+	}
+
 	public void compute() {
+		if (this.source == null)
+			throw new IllegalArgumentException("Must setSource first");
+		
 		int computedNodes = 0;
 		List<Node> nodesToCompute = new ArrayList<>();
 		
@@ -50,18 +40,32 @@ public class Dijkstra {
 				Node currentNode = nodesToCompute.remove(0);
 				
 				if (currentNode.equals(source)) {
-					treeMap.replace(currentNode, (long) 0);
-					for (Map.Entry<Node, Double> entry : currentNode.getVoisins().entrySet()) {
-						nodesToCompute.add(entry.getKey());
-						long distance = treeMap.get(currentNode) + Math.round(entry.getKey().distanceTo(currentNode));
-						if (distance < Math.round(entry.getValue())) {
-							treeMap.replace(entry.getKey(), distance);
-						}
+					treeMap.get(currentNode).setTime(0);;
+				}
+				
+				for (Map.Entry<Node, Double> entry : currentNode.getVoisins().entrySet()) {
+					
+					Node newNode = entry.getKey();
+					nodesToCompute.add(newNode);
+					
+					long distance = treeMap.get(currentNode).getTime() + Math.round(entry.getValue());
+					
+					if (distance < treeMap.get(newNode).getTime()) {
+						// New minimal time
+						treeMap.get(newNode).setTime(distance);
+						// New shortest Path
+						treeMap.get(newNode).setPath(treeMap.get(currentNode).getPath());
+						treeMap.get(newNode).getPath().addNode(newNode);
 					}
 				}
 			}
-		}
-		
+		}	
 	}
 	
+	public Path getShortestPath(Node destination) {
+		if (this.treeMap == null)
+			throw new IllegalArgumentException("Must compute first");
+		return this.treeMap.get(destination).getPath();
+	}
+
 }

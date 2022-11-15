@@ -27,4 +27,13 @@ public class Graph {
 	public Set<Node> getIte() {
 		return nodeArray;
 	}
+	
+	public Node getNodeFromCase(Case myCase) {
+		for (Node node : this.getIte()) {
+			if (node.getCase().equal(myCase)) {
+				return node;
+			}
+		}
+		throw new IllegalArgumentException("Case non presente dans le graph");
+	}
 }
