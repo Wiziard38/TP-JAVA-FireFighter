@@ -18,7 +18,7 @@ import org.graphstream.graph.implementations.SingleGraph;
 import io.VerserEau;
 import io.RemplissageReservoir;
 import io.Fini;
-
+import io.TypeEvent;
 public abstract class Robot {
 	private Case position;
 	private int vitesse;
@@ -27,7 +27,7 @@ public abstract class Robot {
 	private double quantiteEau = 0;
 	private boolean occupied;
 	private Graph mapGraph;
-	private String dernierEventType = "Debut";
+	private TypeEvent dernierEventType = TypeEvent.Debut;
 	
 	public Robot(Case init_position, int vitesse, double tailleReservoir, String type, Carte carte) {
 		if (vitesse < 0) {
@@ -45,11 +45,11 @@ public abstract class Robot {
 		this.initGraph(carte);
 	}
 	
-	public String getDernierEventType() {
+	public TypeEvent getDernierEventType() {
 		return this.dernierEventType;
 	}
 	
-	public void setDernierEventType(String s) {
+	public void setDernierEventType(TypeEvent s) {
 		this.dernierEventType = s;
 	}
 	
@@ -235,7 +235,7 @@ public abstract class Robot {
 			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, current_date));
 		}
 		simulateur.ajouteEvenement(new Fini(this,current_date));
-		this.dernierEventType = "Deplacement";
+		this.dernierEventType = TypeEvent.Deplacement;
 	}
 	
 	public Direction getDirection(Case origin, Case dest) {
@@ -256,7 +256,7 @@ public abstract class Robot {
 		VerserEau event = new VerserEau(simu.getJeuDeDonnees().getIncendie(this.position),this,eau, date);
 		simu.ajouteEvenement(event);
 		simu.ajouteEvenement(new Fini(this, date));
-		this.dernierEventType = "VerserEau";
+		this.dernierEventType = TypeEvent.VerserEau;
 	}
 	
 	public void rechargerEau(Simulateur simu, long eau, long date) {

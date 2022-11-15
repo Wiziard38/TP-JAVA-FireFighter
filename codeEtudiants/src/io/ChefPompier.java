@@ -33,14 +33,13 @@ public class ChefPompier {
 			while(robotTraite == null){
 				robotTraite= getRobotPret(incendieATraite.getPosition());
 			}
-			gestionFeu(robotTraite,incendieATraite);
 			switch(robotTraite.getDernierEventType()) {
-			case "Debut":
+			case Debut:
 				robotTraite.goTo(incendieATraite.getPosition(), simu, (long)robotTraite.getEauRestante());
 				System.out.println("Debut de l'oppération pour: "+robotTraite.getNameRobot());
 				incendieATraite.setTraite(true);
 				break;
-			case "Deplacement":
+			case Deplacement:
 				if(robotTraite.getEauRestante() != 0) {
 				System.out.println("go deverser de l'eau pour: "+robotTraite.getNameRobot());
 				robotTraite.deverserEau(simu, (long)robotTraite.getEauRestante(), simu.getDateSimulation()+30);
@@ -56,7 +55,4 @@ public class ChefPompier {
 		}
 	}
 	
-	private void gestionFeu(Robot robotTrataite, Incendie incendieATraite) {
-		
-	}
 }
