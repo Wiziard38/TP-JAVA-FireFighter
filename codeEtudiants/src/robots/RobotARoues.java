@@ -29,4 +29,14 @@ public class RobotARoues extends RobotTerrestre {
 	public long getTempsRemplissage() {
 		return 10*60;
 	}
+	
+	@Override
+	public long getQuantiteVersementUnitaire() {
+		return 100;
+	}
+	
+	@Override
+	public long getTempsVersementUnitaire() {
+		return 5;
+	}
 }

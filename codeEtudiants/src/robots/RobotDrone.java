@@ -32,4 +32,14 @@ public class RobotDrone extends RobotAerien {
 	public long getTempsRemplissage() {
 		return 30*60;
 	}
+	
+	@Override
+	public long getQuantiteVersementUnitaire() {
+		return this.getEauRestante();
+	}
+	
+	@Override
+	public long getTempsVersementUnitaire() {
+		return 30;
+	}
 }

@@ -8,7 +8,7 @@ import io.Simulateur;
 public class RobotAPattes extends RobotTerrestre {
 	
 	public RobotAPattes(Case position, Carte carte) {
-		super(position, 30, 2000,"PATTES", carte);
+		super(position, 30, Long.MAX_VALUE, "PATTES", carte);
 	}
 
 
@@ -29,6 +29,16 @@ public class RobotAPattes extends RobotTerrestre {
 	
 	@Override
 	public long getTempsRemplissage() {
-		return 0;
+		throw new IllegalArgumentException("oulala");
+	}
+	
+	@Override
+	public long getQuantiteVersementUnitaire() {
+		return 10;
+	}
+	
+	@Override
+	public long getTempsVersementUnitaire() {
+		return 1;
 	}
 }

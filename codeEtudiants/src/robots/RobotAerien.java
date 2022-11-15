@@ -1,6 +1,7 @@
 package robots;
 
 
+import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 
 import io.Carte;
@@ -15,12 +16,12 @@ public abstract class RobotAerien extends Robot {
 
 	
 	@Override
-	public Path getClosestWater(Simulateur simulateur) {	
+	public Case getClosestWater(Simulateur simulateur, Case currentPos) {	
 		double min_val = Double.POSITIVE_INFINITY;
 		Path best_path = null;
 		
 		for (Case waterTile : simulateur.getJeuDeDonnees().getCasesEaux()) {
-			Path path = this.pathFinding(waterTile, simulateur);
+			Path path = this.getShortestPath(currentPos, waterTile);
 			double current_time = this.getTimeFromPath(path);
 			if (current_time < min_val) {
 				min_val = current_time;
@@ -31,7 +32,9 @@ public abstract class RobotAerien extends Robot {
 		if (best_path == null) {
 			throw new IllegalArgumentException("Gros probleme");
 		}
-		return best_path;
+		Object[] array = best_path.peekNode().getAttribute("xy");
+		Case caseEau = simulateur.getJeuDeDonnees().getCarte().getCase((int) array[0], (int) array[1]);
+		return caseEau;
 	}
 	
 }

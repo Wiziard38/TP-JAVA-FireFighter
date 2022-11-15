@@ -15,12 +15,12 @@ public abstract class RobotTerrestre extends Robot {
 	
 	
 	@Override
-	public Path getClosestWater(Simulateur simulateur) {
+	public Case getClosestWater(Simulateur simulateur, Case currentPos) {
 		double min_val = Double.POSITIVE_INFINITY;
 		Path best_path = null;
 		
 		for (Case shoreTile : simulateur.getJeuDeDonnees().getCasesVoisins()) {
-			Path path = this.pathFinding(shoreTile, simulateur);
+			Path path = this.getShortestPath(currentPos, shoreTile);
 			double current_time = this.getTimeFromPath(path);
 			if (current_time < min_val) {
 				min_val = current_time;
@@ -31,6 +31,8 @@ public abstract class RobotTerrestre extends Robot {
 		if (best_path == null) {
 			throw new IllegalArgumentException("Aucune case d'eau accessible");
 		}
-		return best_path;
+		Object[] array = best_path.peekNode().getAttribute("xy");
+		Case caseEau = simulateur.getJeuDeDonnees().getCarte().getCase((int) array[0], (int) array[1]);
+		return caseEau;
 	}
 }

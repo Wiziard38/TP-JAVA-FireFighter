@@ -20,7 +20,7 @@ public class VerserEau extends Evenement {
 		if (robot.getPosition().equal(this.incendie.getPosition())) {
 			System.out.println(robot.getEauRestante() - this.quantiteEau);
 			this.incendie.setEauNecessaire(Math.max(this.incendie.getEauNecessaire()-this.quantiteEau,0));
-			robot.deverseEau(quantiteEau);
+			robot.setEauRestante(robot.getEauRestante() - quantiteEau);
 			System.out.println("quantité necessaire incendie: "+this.incendie.getEauNecessaire()+ "quantité eau: "+robot.getEauRestante());;
 		}
 

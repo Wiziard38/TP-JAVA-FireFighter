@@ -1,12 +1,6 @@
 package robots;
 
-import io.Carte;
-
-import io.Case;
-import io.NatureTerrain;
-import io.Simulateur;
-import io.Deplacement;
-import io.Direction;
+import io.*;
 
 import org.graphstream.algorithm.Dijkstra;
 import org.graphstream.algorithm.Dijkstra.Element;
@@ -15,19 +9,16 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.SingleGraph;
-import io.VerserEau;
-import io.RemplissageReservoir;
-import io.Fini;
 
 public abstract class Robot {
 	private Case position;
 	private int vitesse;
 	private String type;
 	private final long tailleReservoir;
-	private double quantiteEau = 0;
+	private long quantiteEau = 0;
 	private boolean occupied;
 	private Graph mapGraph;
-	private String dernierEventType = "Debut";
+	//private String dernierEventType = "Debut";
 	
 	public Robot(Case init_position, int vitesse, long tailleReservoir, String type, Carte carte) {
 		if (vitesse < 0) {
@@ -45,13 +36,13 @@ public abstract class Robot {
 		this.initGraph(carte);
 	}
 	
-	public String getDernierEventType() {
-		return this.dernierEventType;
-	}
-	
-	public void setDernierEventType(String s) {
-		this.dernierEventType = s;
-	}
+//	public String getDernierEventType() {
+//		return this.dernierEventType;
+//	}
+//	
+//	public void setDernierEventType(String s) {
+//		this.dernierEventType = s;
+//	}
 	
 	public double getQuantiteReservoir() {
 		return this.quantiteEau;
@@ -74,19 +65,19 @@ public abstract class Robot {
 		}
 	}
 		
-	public double getEauRestante() {
+	public long getEauRestante() {
 		return this.quantiteEau;
 	}
 	
-	public void setEauRestante(double volume) {
+	public void setEauRestante(long volume) {
 		if (volume < 0) {
 			throw new IllegalArgumentException("Volume d'eau négatif !");
 		}
 		this.quantiteEau = volume;
 	}
 
-	public double deverseEau(double volume) {
-		double EauRestante = this.getEauRestante();
+	public double setEau(long volume) {
+		long EauRestante = this.getEauRestante();
 
 		if (EauRestante < volume) {
 			this.setEauRestante(0);
@@ -176,10 +167,12 @@ public abstract class Robot {
 	public Graph getGraph() {
 		return this.mapGraph;
 	}
+
 	
-	public Path pathFinding(Case objective, Simulateur simulateur) {
+	
+	public Path getShortestPath(Case position, Case objective) {
 		Graph graph = this.getGraph();
-		Node start = graph.getNode(String.format("%x %x", this.getPosition().getLigne(), this.getPosition().getColonne()));
+		Node start = graph.getNode(String.format("%x %x", position.getLigne(), position.getColonne()));
 		Node end = graph.getNode(String.format("%x %x", objective.getLigne(), objective.getColonne()));
 		
 		Dijkstra dijkstra = new Dijkstra(Element.EDGE, "result", "time");
@@ -197,6 +190,10 @@ public abstract class Robot {
 		return dijkstra.getPath(end);
 	}
 	
+	public boolean existsPathTo(Case objective) {
+		return (getShortestPath(this.getPosition(), objective) == null);
+	}
+
 	public double getTimeFromPath(Path path) {
 		if (path == null) {
 			return Double.POSITIVE_INFINITY; 
@@ -204,16 +201,15 @@ public abstract class Robot {
 		return path.getPathWeight("time");
 	}
 	
-	public void goTo(Case objective, Simulateur simulateur, long date) {
-		this.occupied = true;
-		Path path = this.pathFinding(objective, simulateur);
-		execPath(path, simulateur, simulateur.getDateSimulation());
+	public long goTo(Case objective, Simulateur simulateur, long dateDebut) {
+		Path path = this.getShortestPath(this.getPosition(), objective);
+		return execPath(path, this.getPosition(), simulateur, dateDebut);
 	}
 	
-	private long execPath(Path shortestPath, Simulateur simulateur, long beginDate) {
+	private long execPath(Path shortestPath, Case currentPos, Simulateur simulateur, long dateDebut) {
 		this.setOccupied(true);
-		Case current_pos = this.getPosition();
-		long current_date = beginDate;
+		Case current_pos = currentPos;
+		long current_date = dateDebut;
 		
 		for (Edge edge : shortestPath.getEachEdge()) {
 			Direction dir;
@@ -234,45 +230,84 @@ public abstract class Robot {
 			
 			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, current_date));
 		}
-		simulateur.ajouteEvenement(new Fini(this,current_date));
-		this.dernierEventType = "Deplacement";
 		return current_date;
 	}
+
+	public long deverserEau(long eauAVerser, Simulateur simulateur, long dateDebut) {
+
+		long dateFin = dateDebut;
+		dateFin += (eauAVerser % this.getQuantiteVersementUnitaire() == 0) ? eauAVerser * this.getTempsVersementUnitaire() : (eauAVerser / this.getQuantiteVersementUnitaire() + 1) * this.getTempsVersementUnitaire();
+
+		VerserEau event = new VerserEau(simulateur.getJeuDeDonnees().getIncendie(this.getPosition()), this, eauAVerser, dateFin);
+		simulateur.ajouteEvenement(event);
+		return dateFin;
+	}
 	
-	public Direction getDirection(Case origin, Case dest) {
-		if (origin.getLigne() == dest.getLigne()) {
-			if (origin.getColonne() > dest.getColonne()) {
-				return Direction.OUEST;
+	public long rechargerEau(Simulateur simu, long dateDebut, Case currentPos, Case waterPos) {
+		long currentDate = dateDebut;
+		
+		// Aller a l'eau
+		currentDate = this.execPath(this.getShortestPath(currentPos, waterPos), currentPos, simu, currentDate);
+		
+		// Se remplir
+		currentDate += this.getTempsRemplissage();
+		RemplissageReservoir event = new RemplissageReservoir(simu.getJeuDeDonnees().getCarte(), this, this.tailleReservoir, currentDate);
+		simu.ajouteEvenement(event);
+		
+		// Revenir a l'incendie
+		currentDate = this.execPath(this.getShortestPath(waterPos, currentPos), waterPos, simu, currentDate);
+		
+		return currentDate;
+	}
+	
+	public void traiteIncendie(Simulateur simulateur, Incendie incendie) {
+		long currentDate = simulateur.getDateSimulation();
+		long eauIncendie = incendie.getEauNecessaire();
+		long eauReservoir = this.getEauRestante();
+		Case positionClosestWater = null;
+		
+		// Deplacement jusqu'a l'incendie
+		currentDate = this.goTo(incendie.getPosition(), simulateur, currentDate);
+		
+		// Tant que il reste du feu
+		while (eauIncendie > 0) {
+			
+			// Si le reservoir est vide
+			if (eauReservoir == 0) {
+				if (positionClosestWater == null) {
+					positionClosestWater = this.getClosestWater(simulateur, incendie.getPosition());
+				}
+				currentDate = this.rechargerEau(simulateur, currentDate, incendie.getPosition(), positionClosestWater);
 			}
-			return Direction.EST;
+			
+			if (eauIncendie > eauReservoir) {
+				currentDate = (long) this.deverserEau(eauReservoir, simulateur, currentDate);
+				eauIncendie -= this.getEauRestante();
+				eauReservoir = 0;
+			} else {
+				currentDate = (long) this.deverserEau(eauIncendie, simulateur, currentDate);
+				eauReservoir -= eauIncendie;
+				eauIncendie = 0;
+			}
 		}
-		if (origin.getLigne() > dest.getLigne()) {
-			return Direction.NORD;
+	}
+
+	public long getVraieEauVersee(long eauSouhaitee) {
+		long eauReelle;
+		long versementUnitaire = this.getQuantiteVersementUnitaire();
+		if (eauSouhaitee % versementUnitaire == 0) {
+			eauReelle = eauSouhaitee;
+		} else {
+			eauReelle = (eauSouhaitee/versementUnitaire + 1) * versementUnitaire;
+			eauReelle = (eauReelle > this.getEauRestante()) ? this.getEauRestante() : eauReelle;
 		}
-		return Direction.SUD;
+		return eauReelle;
 	}
 	
-	public void deverserEau(Simulateur simu, long eau, long date) {
-		this.occupied = true;
-		VerserEau event = new VerserEau(simu.getJeuDeDonnees().getIncendie(this.position),this, eau, date);
-		simu.ajouteEvenement(event);
-		simu.ajouteEvenement(new Fini(this, date));
-		this.dernierEventType = "VerserEau";
-	}
-	
-	public void rechargerEau(Simulateur simu, long eau, long date) {
-		this.occupied = true;
-		Path cheminEau = this.getClosestWater(simu);
-		long endDate = execPath(cheminEau, simu, date);
-		endDate += this.getTempsRemplissage();
-		RemplissageReservoir event = new RemplissageReservoir(simu.getJeuDeDonnees().getCarte(), this, this.tailleReservoir, endDate);
-		simu.ajouteEvenement(event);
-		simu.ajouteEvenement(new Fini(this, endDate));
-		this.dernierEventType = "RemplirEau";
-	}
-	
+	public abstract long getTempsVersementUnitaire();
+	public abstract long getQuantiteVersementUnitaire();
 	public abstract long getTempsRemplissage();
-	public abstract Path getClosestWater(Simulateur simulateur);
+	public abstract Case getClosestWater(Simulateur simulateur, Case currentPos);
 	public abstract boolean peutDeplacer(NatureTerrain terrain);
 	public abstract String getNameRobot();
 }
