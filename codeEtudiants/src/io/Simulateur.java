@@ -56,7 +56,7 @@ public class Simulateur implements Simulable{
 	
 		DonneesSimulation jeuDeDonnees;
 		try {
-			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/carteSujet.map");
+			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
 			this.jeuDeDonnees = jeuDeDonnees;
 			this.tailleCasesSimu = Math.min(this.simu.getPanelHeight(),
 					this.simu.getPanelWidth())/Math.max(jeuDeDonnees.getCarte().getNbColonnes(),

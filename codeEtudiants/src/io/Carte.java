@@ -40,9 +40,9 @@ public class Carte {
 		case SUD:
 			return src.getLigne() + 1 <= this.nbLignes - 1;
 		case EST:
-			return src.getColonne() + 1 >= 0;
+			return src.getColonne() + 1 <= this.nbColonnes - 1;
 		case OUEST:
-			return src.getColonne() - 1 <= this.nbColonnes - 1;
+			return src.getColonne() - 1 >=0;
 		default:
 			return false;
 		}

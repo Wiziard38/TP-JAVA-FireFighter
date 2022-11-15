@@ -38,7 +38,7 @@ public class DonneesSimulation {
 	}
 	public Incendie getIncendie(Case pos) {
 		for (int i = 0; i < this.incendies.length; i++) {
-			if(incendies[i].getPosition().equals(pos)) {
+			if(incendies[i].getPosition().equal(pos)) {
 				return this.incendies[i];
 			}
 		}

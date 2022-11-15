@@ -13,6 +13,7 @@ public class ChefPompier {
 	private Incendie resteFeu() {
 		for (Incendie incendie : jeuDeDonnees.getIncendies()) {
 			if (incendie.getEauNecessaire() != 0 && !incendie.getTraite()) {
+				incendie.setTraite(true);
 				return incendie;
 			}
 		}
@@ -35,24 +36,7 @@ public class ChefPompier {
 			while(robotTraite == null){
 				robotTraite= getRobotPret(incendieATraite.getPosition());
 			}
-			switch(robotTraite.getDernierEventType()) {
-			case Debut:
-				robotTraite.goTo(incendieATraite.getPosition(), simu, (long)robotTraite.getEauRestante());
-				System.out.println("Debut de l'oppération pour: "+robotTraite.getNameRobot());
-				incendieATraite.setTraite(true);
-				break;
-			case Deplacement:
-				if(robotTraite.getEauRestante() != 0) {
-				System.out.println("go deverser de l'eau pour: "+robotTraite.getNameRobot());
-				robotTraite.deverserEau(simu, (long)robotTraite.getEauRestante(), simu.getDateSimulation()+30);
-				}
-				break;
-			default:
-				System.out.println("go se déplacer pour: "+robotTraite.getNameRobot());
-				robotTraite.goTo(incendieATraite.getPosition(), simu, (long)robotTraite.getEauRestante());
-				incendieATraite.setTraite(true);
-				break;
-			}
+			robotTraite.traiteIncendie(simu, incendieATraite);
 			incendieATraite = resteFeu();
 		}
 	}

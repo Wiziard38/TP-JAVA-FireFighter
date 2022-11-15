@@ -15,15 +15,17 @@ public class VerserEau extends Evenement {
 	
 	@Override
 	public void execute() {
-		System.out.println(robot.getPosition().getLigne());
-		System.out.println(this.incendie.getPosition().getLigne());
 		if (robot.getPosition().equal(this.incendie.getPosition())) {
 			System.out.println(robot.getEauRestante() - this.quantiteEau);
 			this.incendie.setEauNecessaire(Math.max(this.incendie.getEauNecessaire()-this.quantiteEau,0));
-			robot.setEauRestante(robot.getEauRestante() - quantiteEau);
+			robot.setEauRestante(Math.max(robot.getEauRestante() - quantiteEau, 0));
 			System.out.println("quantité necessaire incendie: "+this.incendie.getEauNecessaire()+ "quantité eau: "+robot.getEauRestante());;
 		}
-
+		else {
+			System.out.println(robot.getPosition().getLigne() + " "+ robot.getPosition().getColonne());
+			System.out.println(incendie.getPosition().getLigne() + " "+ incendie.getPosition().getColonne());
+			System.out.println("perdu");
+		}
 	}
 
 }

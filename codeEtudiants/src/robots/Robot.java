@@ -47,7 +47,7 @@ public abstract class Robot {
 		this.dernierEventType = s;
 	}
 	
-	public double getQuantiteReservoir() {
+	public long getQuantiteReservoir() {
 		return this.quantiteEau;
 	}
 	
@@ -182,7 +182,9 @@ public abstract class Robot {
 		dijkstra.init(graph);
 		dijkstra.setSource(start);
 		dijkstra.compute();
-		
+		if (end == null) {
+			return null;
+		}
 		if (dijkstra.getPathLength(end) == Double.POSITIVE_INFINITY) { // Disconnected nodes
 			return null;
 		}
@@ -194,7 +196,7 @@ public abstract class Robot {
 	}
 	
 	public boolean existsPathTo(Case objective) {
-		return (getShortestPath(this.getPosition(), objective) == null);
+		return (getShortestPath(this.getPosition(), objective) != null);
 	}
 
 	public double getTimeFromPath(Path path) {
@@ -210,7 +212,6 @@ public abstract class Robot {
 	}
 	
 	private long execPath(Path shortestPath, Case currentPos, Simulateur simulateur, long dateDebut) {
-		this.setOccupied(true);
 		Case current_pos = currentPos;
 		long current_date = dateDebut;
 		
@@ -236,12 +237,12 @@ public abstract class Robot {
 		return current_date;
 	}
 
-	public long deverserEau(long eauAVerser, Simulateur simulateur, long dateDebut) {
+	public long deverserEau(Incendie incendie, long eauAVerser, Simulateur simulateur, long dateDebut) {
 
 		long dateFin = dateDebut;
-		dateFin += (eauAVerser % this.getQuantiteVersementUnitaire() == 0) ? eauAVerser * this.getTempsVersementUnitaire() : (eauAVerser / this.getQuantiteVersementUnitaire() + 1) * this.getTempsVersementUnitaire();
+		dateFin += (eauAVerser % this.getQuantiteVersementUnitaire() == 0) ? (eauAVerser/this.getQuantiteVersementUnitaire()) * this.getTempsVersementUnitaire() : (eauAVerser / this.getQuantiteVersementUnitaire() + 1) * this.getTempsVersementUnitaire();
 
-		VerserEau event = new VerserEau(simulateur.getJeuDeDonnees().getIncendie(this.getPosition()), this, eauAVerser, dateFin);
+		VerserEau event = new VerserEau(incendie, this, eauAVerser, dateFin);
 		simulateur.ajouteEvenement(event);
 		return dateFin;
 	}
@@ -264,10 +265,18 @@ public abstract class Robot {
 	}
 	
 	public void traiteIncendie(Simulateur simulateur, Incendie incendie) {
+		this.setOccupied(true);
 		long currentDate = simulateur.getDateSimulation();
 		long eauIncendie = incendie.getEauNecessaire();
 		long eauReservoir = this.getEauRestante();
 		Case positionClosestWater = null;
+//		boolean premierIncendie = true;
+//		
+//		if (eauReservoir == 0) {
+//			premierIncendie = false;
+//			currentDate = this.rechargerEau(simulateur, currentDate, this.getPosition(), this.getClosestWater(simulateur, this.getPosition()));
+//			eauReservoir = this.tailleReservoir;
+//		}
 		
 		// Deplacement jusqu'a l'incendie
 		currentDate = this.goTo(incendie.getPosition(), simulateur, currentDate);
@@ -277,22 +286,27 @@ public abstract class Robot {
 			
 			// Si le reservoir est vide
 			if (eauReservoir == 0) {
-				if (positionClosestWater == null) {
+				if (positionClosestWater == null ) {
 					positionClosestWater = this.getClosestWater(simulateur, incendie.getPosition());
 				}
 				currentDate = this.rechargerEau(simulateur, currentDate, incendie.getPosition(), positionClosestWater);
+				eauReservoir = this.tailleReservoir;
+				this.setEauRestante(tailleReservoir);
 			}
-			
-			if (eauIncendie > eauReservoir) {
-				currentDate = (long) this.deverserEau(eauReservoir, simulateur, currentDate);
-				eauIncendie -= this.getEauRestante();
-				eauReservoir = 0;
-			} else {
-				currentDate = (long) this.deverserEau(eauIncendie, simulateur, currentDate);
-				eauReservoir -= eauIncendie;
-				eauIncendie = 0;
+			else {
+				if (eauIncendie > eauReservoir) {
+					System.out.println(eauReservoir);
+					currentDate = (long) this.deverserEau(incendie,eauReservoir, simulateur, currentDate);
+					eauIncendie -= this.getEauRestante();
+					eauReservoir = 0;
+				} else {
+					currentDate = (long) this.deverserEau(incendie,eauIncendie, simulateur, currentDate);
+					eauReservoir -= eauIncendie;
+					eauIncendie = 0;
+				}
 			}
 		}
+		simulateur.ajouteEvenement(new Fini(this,currentDate));
 	}
 
 	public long getVraieEauVersee(long eauSouhaitee) {

@@ -32,9 +32,9 @@ public class RemplissageReservoir extends Evenement {
 		if(carte.voisinExiste(caseAct, Direction.OUEST)) {
 			caseW = carte.getVoisin(caseAct, Direction.OUEST);
 		}
-		return caseN.getNature() == NatureTerrain.EAU |
-				caseS.getNature() == NatureTerrain.EAU |
-				caseE.getNature() == NatureTerrain.EAU |
+		return caseN.getNature() == NatureTerrain.EAU ||
+				caseS.getNature() == NatureTerrain.EAU ||
+				caseE.getNature() == NatureTerrain.EAU ||
 				caseW.getNature() == NatureTerrain.EAU;
 	}
 	
