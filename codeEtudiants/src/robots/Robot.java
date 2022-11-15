@@ -13,6 +13,7 @@ import io.VerserEau;
 import io.RemplissageReservoir;
 import io.Fini;
 import io.TypeEvent;
+
 public abstract class Robot {
 	private Case position;
 	private int vitesse;
@@ -47,8 +48,8 @@ public abstract class Robot {
 		this.dernierEventType = s;
 	}
 	
-	public long getQuantiteReservoir() {
-		return this.quantiteEau;
+	public long getTailleReservoir() {
+		return this.tailleReservoir;
 	}
 	
 	public String getType(){
@@ -172,7 +173,7 @@ public abstract class Robot {
 	}
 
 	
-	
+
 	public Path getShortestPath(Case position, Case objective) {
 		Graph graph = this.getGraph();
 		Node start = graph.getNode(String.format("%x %x", position.getLigne(), position.getColonne()));
@@ -270,13 +271,6 @@ public abstract class Robot {
 		long eauIncendie = incendie.getEauNecessaire();
 		long eauReservoir = this.getEauRestante();
 		Case positionClosestWater = null;
-//		boolean premierIncendie = true;
-//		
-//		if (eauReservoir == 0) {
-//			premierIncendie = false;
-//			currentDate = this.rechargerEau(simulateur, currentDate, this.getPosition(), this.getClosestWater(simulateur, this.getPosition()));
-//			eauReservoir = this.tailleReservoir;
-//		}
 		
 		// Deplacement jusqu'a l'incendie
 		currentDate = this.goTo(incendie.getPosition(), simulateur, currentDate);
@@ -291,22 +285,20 @@ public abstract class Robot {
 				}
 				currentDate = this.rechargerEau(simulateur, currentDate, incendie.getPosition(), positionClosestWater);
 				eauReservoir = this.tailleReservoir;
-				this.setEauRestante(tailleReservoir);
 			}
 			else {
 				if (eauIncendie > eauReservoir) {
-					System.out.println(eauReservoir);
-					currentDate = (long) this.deverserEau(incendie,eauReservoir, simulateur, currentDate);
-					eauIncendie -= this.getEauRestante();
+					currentDate = (long) this.deverserEau(incendie, eauReservoir, simulateur, currentDate);
+					eauIncendie -= eauReservoir;
 					eauReservoir = 0;
 				} else {
-					currentDate = (long) this.deverserEau(incendie,eauIncendie, simulateur, currentDate);
+					currentDate = (long) this.deverserEau(incendie, eauIncendie, simulateur, currentDate);
 					eauReservoir -= eauIncendie;
 					eauIncendie = 0;
 				}
 			}
 		}
-		simulateur.ajouteEvenement(new Fini(this,currentDate));
+		simulateur.ajouteEvenement(new Fini(this, currentDate));
 	}
 
 	public long getVraieEauVersee(long eauSouhaitee) {
