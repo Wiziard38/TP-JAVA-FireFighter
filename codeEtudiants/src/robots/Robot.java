@@ -9,7 +9,10 @@ import org.graphstream.graph.Edge;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.Path;
 import org.graphstream.graph.implementations.SingleGraph;
-
+import io.VerserEau;
+import io.RemplissageReservoir;
+import io.Fini;
+import io.TypeEvent;
 public abstract class Robot {
 	private Case position;
 	private int vitesse;
@@ -18,7 +21,7 @@ public abstract class Robot {
 	private long quantiteEau = 0;
 	private boolean occupied;
 	private Graph mapGraph;
-	//private String dernierEventType = "Debut";
+	private TypeEvent dernierEventType = TypeEvent.Debut;
 	
 	public Robot(Case init_position, int vitesse, long tailleReservoir, String type, Carte carte) {
 		if (vitesse < 0) {
@@ -36,13 +39,13 @@ public abstract class Robot {
 		this.initGraph(carte);
 	}
 	
-//	public String getDernierEventType() {
-//		return this.dernierEventType;
-//	}
-//	
-//	public void setDernierEventType(String s) {
-//		this.dernierEventType = s;
-//	}
+	public TypeEvent getDernierEventType() {
+		return this.dernierEventType;
+	}
+	
+	public void setDernierEventType(TypeEvent s) {
+		this.dernierEventType = s;
+	}
 	
 	public double getQuantiteReservoir() {
 		return this.quantiteEau;
