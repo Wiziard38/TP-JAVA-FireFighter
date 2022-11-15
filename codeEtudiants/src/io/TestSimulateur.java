@@ -28,8 +28,9 @@ public class TestSimulateur {
         // crée l'invader, en l'associant à la fenêtre graphique précédente
         Simulateur simu = new Simulateur(gui);
         DonneesSimulation jeuDeDonnees = simu.getJeuDeDonnees();
-        Robot robot = jeuDeDonnees.getRobots()[0];
-        ChefPompier chef= new ChefPompier(simu,jeuDeDonnees);
-        chef.start();
+        Robot robot = jeuDeDonnees.getRobots()[1];
+//        ChefPompier chef= new ChefPompier(simu,jeuDeDonnees);
+//        chef.start();
+        robot.traiteIncendie(simu, simu.getJeuDeDonnees().getIncendies()[0]);
 	}
 }

@@ -9,6 +9,7 @@ public class ChefPompier {
 		this.jeuDeDonnees = jeuDeDonnees;
 		this.simu = simu;
 	}
+
 	private Incendie resteFeu() {
 		for (Incendie incendie : jeuDeDonnees.getIncendies()) {
 			if (incendie.getEauNecessaire() != 0 && !incendie.getTraite()) {
@@ -20,12 +21,13 @@ public class ChefPompier {
 	
 	private Robot getRobotPret(Case caseIncendie) {
 		for (Robot robot : jeuDeDonnees.getRobots()) {
-			if (!robot.getOccupied() && (robot.pathFinding(caseIncendie, simu) != null || robot.getPosition().equal(caseIncendie))) {
+			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie) || robot.getPosition().equal(caseIncendie))) {
 				return robot;
 			}
 		}
 		return null;
 	}
+
 	public void start() {
 		Incendie incendieATraite = resteFeu();
 		while (incendieATraite != null) {

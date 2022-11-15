@@ -4,6 +4,7 @@ import io.Case;
 import io.Carte;
 import io.NatureTerrain;
 import io.Simulateur;
+import io.VerserEau;
 
 public class RobotAChenilles extends RobotTerrestre {
 	
@@ -33,4 +34,20 @@ public class RobotAChenilles extends RobotTerrestre {
 	public String getNameRobot() {
 		return "Robot a chenilles";
 	}
+	
+	@Override
+	public long getTempsRemplissage() {
+		return 5*60;
+	}
+	
+	@Override
+	public long getQuantiteVersementUnitaire() {
+		return 100;
+	}
+	
+	@Override
+	public long getTempsVersementUnitaire() {
+		return 8;
+	}
+
 }
