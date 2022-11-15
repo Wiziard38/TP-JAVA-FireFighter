@@ -23,13 +23,13 @@ public abstract class Robot {
 	private Case position;
 	private int vitesse;
 	private String type;
-	private final double tailleReservoir;
+	private final long tailleReservoir;
 	private double quantiteEau = 0;
 	private boolean occupied;
 	private Graph mapGraph;
 	private String dernierEventType = "Debut";
 	
-	public Robot(Case init_position, int vitesse, double tailleReservoir, String type, Carte carte) {
+	public Robot(Case init_position, int vitesse, long tailleReservoir, String type, Carte carte) {
 		if (vitesse < 0) {
 			throw new IllegalArgumentException("La vitesse doit etre positive !");
 		}
@@ -204,16 +204,16 @@ public abstract class Robot {
 		return path.getPathWeight("time");
 	}
 	
-	public void goTo(Case objective, Simulateur simulateur, long eau) {
+	public void goTo(Case objective, Simulateur simulateur, long date) {
 		this.occupied = true;
 		Path path = this.pathFinding(objective, simulateur);
-		execPath(path, simulateur);
+		execPath(path, simulateur, simulateur.getDateSimulation());
 	}
 	
-	private void execPath(Path shortestPath, Simulateur simulateur) {
+	private long execPath(Path shortestPath, Simulateur simulateur, long beginDate) {
 		this.setOccupied(true);
 		Case current_pos = this.getPosition();
-		long current_date = simulateur.getDateSimulation();
+		long current_date = beginDate;
 		
 		for (Edge edge : shortestPath.getEachEdge()) {
 			Direction dir;
@@ -236,6 +236,7 @@ public abstract class Robot {
 		}
 		simulateur.ajouteEvenement(new Fini(this,current_date));
 		this.dernierEventType = "Deplacement";
+		return current_date;
 	}
 	
 	public Direction getDirection(Case origin, Case dest) {
@@ -253,19 +254,25 @@ public abstract class Robot {
 	
 	public void deverserEau(Simulateur simu, long eau, long date) {
 		this.occupied = true;
-		VerserEau event = new VerserEau(simu.getJeuDeDonnees().getIncendie(this.position),this,eau, date);
+		VerserEau event = new VerserEau(simu.getJeuDeDonnees().getIncendie(this.position),this, eau, date);
 		simu.ajouteEvenement(event);
 		simu.ajouteEvenement(new Fini(this, date));
 		this.dernierEventType = "VerserEau";
 	}
 	
 	public void rechargerEau(Simulateur simu, long eau, long date) {
-		//Il faudra ajouter le chemin pour aller jusqu'à l'eau
-		RemplissageReservoir event = new RemplissageReservoir(simu.getJeuDeDonnees().getCarte(),this, eau, date);
+		this.occupied = true;
+		Path cheminEau = this.getClosestWater(simu);
+		long endDate = execPath(cheminEau, simu, date);
+		endDate += this.getTempsRemplissage();
+		RemplissageReservoir event = new RemplissageReservoir(simu.getJeuDeDonnees().getCarte(), this, this.tailleReservoir, endDate);
 		simu.ajouteEvenement(event);
+		simu.ajouteEvenement(new Fini(this, endDate));
+		this.dernierEventType = "RemplirEau";
 	}
 	
-	public abstract double getClosestWater(Simulateur simulateur);
+	public abstract long getTempsRemplissage();
+	public abstract Path getClosestWater(Simulateur simulateur);
 	public abstract boolean peutDeplacer(NatureTerrain terrain);
 	public abstract String getNameRobot();
 }

@@ -24,4 +24,9 @@ public class RobotARoues extends RobotTerrestre {
 	public String getNameRobot() {
 		return "Robot a roues";
 	}
+	
+	@Override
+	public long getTempsRemplissage() {
+		return 10*60;
+	}
 }

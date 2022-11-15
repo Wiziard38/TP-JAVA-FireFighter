@@ -33,4 +33,9 @@ public class RobotAChenilles extends RobotTerrestre {
 	public String getNameRobot() {
 		return "Robot a chenilles";
 	}
+	
+	@Override
+	public long getTempsRemplissage() {
+		return 5*60;
+	}
 }

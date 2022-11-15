@@ -26,4 +26,9 @@ public class RobotAPattes extends RobotTerrestre {
 	public String getNameRobot() {
 		return "Robot a pattes";
 	}
+	
+	@Override
+	public long getTempsRemplissage() {
+		return 0;
+	}
 }

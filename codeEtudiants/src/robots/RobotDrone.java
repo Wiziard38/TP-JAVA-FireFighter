@@ -27,4 +27,9 @@ public class RobotDrone extends RobotAerien {
 	public String getNameRobot() {
 		return "Robot drone";
 	}
+	
+	@Override
+	public long getTempsRemplissage() {
+		return 30*60;
+	}
 }

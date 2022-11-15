@@ -9,7 +9,7 @@ import io.Simulateur;
 
 public abstract class RobotAerien extends Robot {
 	
-	public RobotAerien(Case init_position, int vitesse, double tailleReservoir, String type, Carte carte) {
+	public RobotAerien(Case init_position, int vitesse, long tailleReservoir, String type, Carte carte) {
 		super(init_position, vitesse, tailleReservoir, type, carte);
 	}
 
