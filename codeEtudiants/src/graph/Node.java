@@ -25,5 +25,8 @@ public class Node{
 		return this.adjacentNodes.get(voisin);
 	}
 
+	public Map<Node, Double> getVoisins() {
+		return this.adjacentNodes;
+	}
 
 }

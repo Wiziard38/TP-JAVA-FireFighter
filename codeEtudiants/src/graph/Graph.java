@@ -23,4 +23,8 @@ public class Graph {
 			second.addVoisin(first, weight);
 		}
 	}
+	
+	public Set<Node> getIte() {
+		return nodeArray;
+	}
 }
