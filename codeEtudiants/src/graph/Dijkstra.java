@@ -1,8 +1,13 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import io.Case;
 
@@ -15,6 +20,7 @@ public class Dijkstra {
 	}
 
 	public void init(Graph graph) {
+		treeMap = new HashMap<>();
 		this.myGraph = graph;
 		for (Node node : graph.getIte()) {
 			treeMap.put(node, new ResultatsPathFinder(new Path(node), Long.MAX_VALUE));
@@ -31,41 +37,51 @@ public class Dijkstra {
 		if (this.source == null)
 			throw new IllegalArgumentException("Must setSource first");
 		
-		int computedNodes = 0;
 		List<Node> nodesToCompute = new ArrayList<>();
+		Set<Node> nodesComputed = new HashSet<>();
 		
-		while (computedNodes != myGraph.getIte().size()) {
+		nodesToCompute.add(source);
+		
+		while (!nodesToCompute.isEmpty()) {
+		
+			Node currentNode = nodesToCompute.remove(0);
+			nodesComputed.add(currentNode);
 			
-			if (!nodesToCompute.isEmpty()) {
-				Node currentNode = nodesToCompute.remove(0);
+			if (currentNode.equals(source)) {
+				treeMap.get(currentNode).setTime(0);
+			}
+			
+			for (Map.Entry<Node, Double> entry : currentNode.getVoisins().entrySet()) {
 				
-				if (currentNode.equals(source)) {
-					treeMap.get(currentNode).setTime(0);;
-				}
+				Node newNode = entry.getKey();
+				if (!nodesComputed.contains(newNode))
+					if (!nodesToCompute.contains(newNode))
+						nodesToCompute.add(newNode);
 				
-				for (Map.Entry<Node, Double> entry : currentNode.getVoisins().entrySet()) {
-					
-					Node newNode = entry.getKey();
-					nodesToCompute.add(newNode);
-					
-					long distance = treeMap.get(currentNode).getTime() + Math.round(entry.getValue());
-					
-					if (distance < treeMap.get(newNode).getTime()) {
-						// New minimal time
-						treeMap.get(newNode).setTime(distance);
-						// New shortest Path
-						treeMap.get(newNode).setPath(treeMap.get(currentNode).getPath());
-						treeMap.get(newNode).getPath().addNode(newNode);
-					}
+				long distance = treeMap.get(currentNode).getTime() + Math.round(entry.getValue());
+				
+				if (distance < treeMap.get(newNode).getTime()) {
+					// New minimal time
+					treeMap.get(newNode).setTime(distance);
+					// New shortest Path
+					Path newPath = treeMap.get(currentNode).getPath().clone();
+					newPath.addNode(newNode);
+					treeMap.get(newNode).setPath(newPath);
 				}
 			}
 		}	
 	}
 	
-	public Path getShortestPath(Node destination) {
+	public Path getShortestPath(Case destination) {
 		if (this.treeMap == null)
 			throw new IllegalArgumentException("Must compute first");
-		return this.treeMap.get(destination).getPath();
+		return this.treeMap.get(myGraph.getNodeFromCase(destination)).getPath();
+	}
+	
+	public long getShortestTime(Case destination) {
+		if (this.treeMap == null)
+			throw new IllegalArgumentException("Must compute first");
+		return this.treeMap.get(myGraph.getNodeFromCase(destination)).getTime();
 	}
 
 }

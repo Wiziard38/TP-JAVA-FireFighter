@@ -17,6 +17,10 @@ public class Graph {
 		nodeArray.add(mapNode);
 	}
 	
+	public void addNode(Node node) {
+		nodeArray.add(node);
+	}
+	
 	public void addEdge(Node first, Node second, double weight) {
 		if (nodeArray.contains(first) && nodeArray.contains(second)) {
 			first.addVoisin(second, weight);
