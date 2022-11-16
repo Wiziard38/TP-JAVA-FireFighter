@@ -4,20 +4,19 @@ public class Incendie {
 	private final Case position;
 	private long eauNecessaire;
 	private final long eauNecessaireRestart;
-	private boolean traite;
+	private Traitement traite;
 	
 	public Incendie(Case pos, long eau) {
 		this.eauNecessaire = eau;
 		this.eauNecessaireRestart = this.eauNecessaire;
 		this.position = pos;
-		this.traite = false;
+		this.traite = Traitement.rien;
 	}
 	
-	public boolean getTraite() {
-		return this.traite;
+	public Traitement getTraite() {
+		return this.traite ;
 	}
-	
-	public void setTraite(boolean val) {
+	public void setTraite(Traitement val) {
 		this.traite = val;
 	}
 	
