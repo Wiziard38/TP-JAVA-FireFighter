@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import evenements.Evenement;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -30,6 +32,7 @@ public class Simulateur implements Simulable{
 	public DonneesSimulation getJeuDeDonnees() {
 		return this.jeuDeDonnees;
 	}
+	
 	public void ajouteEvenement(Evenement e) {
 		this.listEvenement.ajouteEvenement(e);
 	}
@@ -39,7 +42,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void incrementeDate() {
-		this.dateSimulation += 20;
+		this.dateSimulation += 40;
 	}
 	
 	public long getDateSimulation() {
@@ -57,9 +60,9 @@ public class Simulateur implements Simulable{
 		DonneesSimulation jeuDeDonnees;
 		try {
 			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/carteSujet.map");
-			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
+			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
 			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/mushroomOfHell-20x20.map");
-			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
+			//jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
 			this.jeuDeDonnees = jeuDeDonnees;
 			this.tailleCasesSimu = Math.min(this.simu.getPanelHeight(),
 					this.simu.getPanelWidth())/Math.max(jeuDeDonnees.getCarte().getNbColonnes(),
@@ -70,7 +73,6 @@ public class Simulateur implements Simulable{
 		} catch (DataFormatException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	public void next() {
@@ -81,7 +83,6 @@ public class Simulateur implements Simulable{
 			while (flag) {
 				this.listEvenement.getPremier().execute();
 				this.listEvenement.suppPremier();
-				System.out.println(this.listEvenement.getPremier());
 				if (this.listEvenement.getPremier() != null) {
 					flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation; 
 				}
@@ -94,7 +95,19 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void restart() {
-		return;
+		for (Robot robot : this.jeuDeDonnees.getRobots()) {
+			robot.RestartPosition();
+			robot.setOccupied(false);
+		}
+		for (Incendie incendie : this.jeuDeDonnees.getIncendies()) {
+			incendie.EauNecessaireRestart();
+			incendie.setTraite(Traitement.rien);
+		}
+		System.out.println("done");
+
+//		ChefPompier chef = new ChefPompier(this, this.jeuDeDonnees);
+//		System.out.println("ok");
+//      chef.start();
 	}
 
 	private void draw(DonneesSimulation jeuDeDonnes) {

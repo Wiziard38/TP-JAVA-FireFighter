@@ -17,7 +17,6 @@ import gui.GUISimulator;
 import gui.ImageElement;
 import robots.Robot;
 
-import org.graphstream.graph.Path;
 
 public class TestSimulateur {
 
@@ -31,6 +30,5 @@ public class TestSimulateur {
         //Robot robot = jeuDeDonnees.getRobots()[0];
         ChefPompier chef= new ChefPompier(simu,jeuDeDonnees);
         chef.start();
-        
 	}
 }

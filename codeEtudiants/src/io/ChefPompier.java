@@ -55,5 +55,5 @@ public class ChefPompier {
 				incendieATraite = resteFeu();
 			}
 		}
-	}	
+	}
 }

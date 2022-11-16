@@ -1,4 +1,4 @@
-package io;
+package evenements;
 
 public abstract class Evenement {
 	private long date;

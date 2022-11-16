@@ -31,7 +31,7 @@ public class Node{
 	
 	@Override
 	public String toString() {
-		return String.format("ligne : %x / colonne : %x", this.getCase().getLigne(), this.getCase().getColonne());
+		return this.getCase().toString();
 	}
 
 }

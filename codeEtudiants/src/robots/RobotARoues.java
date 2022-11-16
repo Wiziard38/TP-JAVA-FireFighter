@@ -1,12 +1,9 @@
 package robots;
 
 import io.Case;
-
-import java.util.Set;
-
 import io.Carte;
 import io.NatureTerrain;
-import io.Simulateur;
+
 
 public class RobotARoues extends RobotTerrestre {
 	
