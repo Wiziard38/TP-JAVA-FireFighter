@@ -1,7 +1,7 @@
 package robots;
 
 
-import graph.*;
+import graph.Dijkstra;
 
 import io.Carte;
 import io.Case;

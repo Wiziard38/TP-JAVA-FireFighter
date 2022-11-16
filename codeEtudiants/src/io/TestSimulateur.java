@@ -17,7 +17,6 @@ import gui.GUISimulator;
 import gui.ImageElement;
 import robots.Robot;
 
-import org.graphstream.graph.Path;
 
 public class TestSimulateur {
 

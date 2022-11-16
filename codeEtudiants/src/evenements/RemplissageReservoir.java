@@ -1,4 +1,8 @@
-package io;
+package evenements;
+import io.Carte;
+import io.Case;
+import io.Direction;
+import io.NatureTerrain;
 import robots.Robot;
 
 public class RemplissageReservoir extends Evenement {

@@ -3,8 +3,7 @@ package robots;
 import io.Case;
 import io.Carte;
 import io.NatureTerrain;
-import io.Simulateur;
-import io.VerserEau;
+
 
 public class RobotAChenilles extends RobotTerrestre {
 	

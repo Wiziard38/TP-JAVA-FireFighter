@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import evenements.Evenement;
+
 import java.io.IOException;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,9 +60,9 @@ public class Simulateur implements Simulable{
 		DonneesSimulation jeuDeDonnees;
 		try {
 			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/carteSujet.map");
-			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
+			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
 			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/mushroomOfHell-20x20.map");
-			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
+			//jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
 			this.jeuDeDonnees = jeuDeDonnees;
 			this.tailleCasesSimu = Math.min(this.simu.getPanelHeight(),
 					this.simu.getPanelWidth())/Math.max(jeuDeDonnees.getCarte().getNbColonnes(),
@@ -81,7 +83,6 @@ public class Simulateur implements Simulable{
 			while (flag) {
 				this.listEvenement.getPremier().execute();
 				this.listEvenement.suppPremier();
-				// System.out.println(this.listEvenement.getPremier());
 				if (this.listEvenement.getPremier() != null) {
 					flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation; 
 				}
@@ -100,13 +101,13 @@ public class Simulateur implements Simulable{
 		}
 		for (Incendie incendie : this.jeuDeDonnees.getIncendies()) {
 			incendie.EauNecessaireRestart();
-			incendie.setTraite(false);
+			incendie.setTraite(Traitement.rien);
 		}
 		System.out.println("done");
 
 //		ChefPompier chef = new ChefPompier(this, this.jeuDeDonnees);
 //		System.out.println("ok");
-//        chef.start();
+//      chef.start();
 	}
 
 	private void draw(DonneesSimulation jeuDeDonnes) {
