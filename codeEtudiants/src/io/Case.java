@@ -25,4 +25,9 @@ public class Case {
 	public boolean equal(Case caseATester) {
 		return this.ligne == caseATester.getLigne() & this.colonne == caseATester.getColonne();
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("x : %x / y : %x", this.getLigne(), this.getColonne());
+	}
 }

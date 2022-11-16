@@ -11,7 +11,7 @@ public class Fini extends Evenement {
 	}
 	@Override
 	public void execute() {
-		System.out.println("Fin de l'ev du robot: "+robot.getNameRobot());
+		//System.out.println("Fin de l'ev du robot: "+robot.getNameRobot());
 		this.robot.setOccupied(false);
 	}
 
