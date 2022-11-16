@@ -28,6 +28,6 @@ public class Case {
 	
 	@Override
 	public String toString() {
-		return String.format("x : %i / y : %i", this.getLigne(), this.getColonne());
+		return String.format("x : %d / y : %d", this.getLigne(), this.getColonne());
 	}
 }

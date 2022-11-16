@@ -22,13 +22,13 @@ public class TestSimulateur {
 
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.dir")+"/codeEtudiants/");
-         //crée la fenêtre graphique dans laquelle dessiner
+        // creer la fenetre graphique dans laquelle dessiner
         GUISimulator gui = new GUISimulator(800, 600, Color.WHITE);
-        // crée l'invader, en l'associant à la fenêtre graphique précédente
+        
         Simulateur simu = new Simulateur(gui);
-        DonneesSimulation jeuDeDonnees = simu.getJeuDeDonnees();
-        //Robot robot = jeuDeDonnees.getRobots()[0];
-        ChefPompier chef= new ChefPompier(simu,jeuDeDonnees);
-        chef.start();
+        simu.chooseMap(2);
+        simu.chooseChef(0);
+        simu.start();
+
 	}
 }
