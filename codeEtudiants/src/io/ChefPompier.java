@@ -9,11 +9,20 @@ public class ChefPompier {
 		this.jeuDeDonnees = jeuDeDonnees;
 		this.simu = simu;
 	}
+	
+	private boolean feuTousEteind() {
+		for(Incendie incendie: jeuDeDonnees.getIncendies()) {
+			if(incendie.getTraite() != Traitement.eteind) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	private Incendie resteFeu() {
 		for (Incendie incendie : jeuDeDonnees.getIncendies()) {
-			if (incendie.getEauNecessaire() != 0 && !incendie.getTraite()) {
-				incendie.setTraite(true);
+			if (incendie.getEauNecessaire() != 0 && incendie.getTraite() == Traitement.rien) {
+				incendie.setTraite(Traitement.traite);
 				return incendie;
 			}
 		}
@@ -30,15 +39,21 @@ public class ChefPompier {
 	}
 
 	public void start() {
-		Incendie incendieATraite = resteFeu();
-		while (incendieATraite != null) {
-			Robot robotTraite= getRobotPret(incendieATraite.getPosition());
-			while(robotTraite == null){
-				robotTraite= getRobotPret(incendieATraite.getPosition());
+		while(!feuTousEteind()) {
+			for (Incendie incendie: jeuDeDonnees.getIncendies()) {
+				if(incendie.getTraite() == Traitement.traite) {
+					incendie.setTraite(Traitement.rien);
+				}
 			}
-			robotTraite.traiteIncendie(simu, incendieATraite);
-			incendieATraite = resteFeu();
+			Incendie incendieATraite = resteFeu();
+			while (incendieATraite != null) {
+				Robot robotTraite= getRobotPret(incendieATraite.getPosition());
+				while(robotTraite == null){
+					robotTraite= getRobotPret(incendieATraite.getPosition());
+				}
+				robotTraite.traiteIncendie(simu, incendieATraite);
+				incendieATraite = resteFeu();
+			}
 		}
-	}
-	
+	}	
 }
