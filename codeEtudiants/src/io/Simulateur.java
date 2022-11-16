@@ -39,7 +39,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void incrementeDate() {
-		this.dateSimulation += 30;
+		this.dateSimulation += 20;
 	}
 	
 	public long getDateSimulation() {
@@ -56,6 +56,9 @@ public class Simulateur implements Simulable{
 	
 		DonneesSimulation jeuDeDonnees;
 		try {
+			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/carteSujet.map");
+			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
+			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/mushroomOfHell-20x20.map");
 			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
 			this.jeuDeDonnees = jeuDeDonnees;
 			this.tailleCasesSimu = Math.min(this.simu.getPanelHeight(),

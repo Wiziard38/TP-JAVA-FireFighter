@@ -7,7 +7,7 @@ import io.NatureTerrain;
 public class RobotDrone extends RobotAerien {
 	
 	public RobotDrone(Case position, Carte carte, int vitesse) {
-		super(position, vitesse, 10000,"DRONE", carte);
+		super(position, vitesse, 10000, "DRONE", carte);
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class RobotDrone extends RobotAerien {
 	
 	@Override
 	public long getQuantiteVersementUnitaire() {
-		return this.getEauRestante();
+		return this.getTailleReservoir();
 	}
 	
 	@Override

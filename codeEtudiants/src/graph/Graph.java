@@ -17,6 +17,10 @@ public class Graph {
 		nodeArray.add(mapNode);
 	}
 	
+	public void addNode(Node node) {
+		nodeArray.add(node);
+	}
+	
 	public void addEdge(Node first, Node second, double weight) {
 		if (nodeArray.contains(first) && nodeArray.contains(second)) {
 			first.addVoisin(second, weight);
@@ -26,5 +30,14 @@ public class Graph {
 	
 	public Set<Node> getIte() {
 		return nodeArray;
+	}
+	
+	public Node getNodeFromCase(Case myCase) {
+		for (Node node : this.getIte()) {
+			if (node.getCase().equal(myCase)) {
+				return node;
+			}
+		}
+		throw new IllegalArgumentException("Case non presente dans le graph");
 	}
 }

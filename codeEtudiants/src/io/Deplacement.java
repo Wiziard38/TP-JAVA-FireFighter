@@ -18,11 +18,11 @@ public class Deplacement extends Evenement {
 	public void execute() {
 		if (carte.voisinExiste(robot.getPosition(), dir)) {
 			Case caseFin = carte.getVoisin(robot.getPosition(), dir);
-			System.out.println("lig: "+caseFin.getLigne()+" col: "+caseFin.getColonne()+" type: "+caseFin.getNature());
+			//System.out.println("lig: "+caseFin.getLigne()+" col: "+caseFin.getColonne()+" type: "+caseFin.getNature());
 			robot.setPosition(caseFin);
 		}
 		else {
-			System.out.println("Impossible de se déplacer");
+			//System.out.println("Impossible de se déplacer");
 		}
 	}
 
