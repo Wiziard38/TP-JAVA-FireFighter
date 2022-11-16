@@ -16,14 +16,14 @@ import graph.*;
 
 
 public abstract class Robot {
+	private final Case positionRestart;
 	private Case position;
 	private int vitesse;
-	private String type;
+	private final String type;
 	private final long tailleReservoir;
 	private long quantiteEau = 0;
 	private boolean occupied;
-	private Graph mapGraph;
-	private TypeEvent dernierEventType = TypeEvent.Debut;
+	private final Graph mapGraph = new Graph("my graph");
 	
 	public Robot(Case init_position, int vitesse, long tailleReservoir, String type, Carte carte) {
 		if (vitesse < 0) {
@@ -31,6 +31,7 @@ public abstract class Robot {
 		}
 
 		this.position = init_position;
+		this.positionRestart = this.position;
 		this.vitesse = vitesse;
 		this.tailleReservoir = tailleReservoir;
 		this.type = type;
@@ -38,15 +39,7 @@ public abstract class Robot {
 		this.setEauRestante(tailleReservoir);
 		
 		this.occupied = false;
-		this.initGraph(carte);
-	}
-	
-	public TypeEvent getDernierEventType() {
-		return this.dernierEventType;
-	}
-	
-	public void setDernierEventType(TypeEvent s) {
-		this.dernierEventType = s;
+		this.initGraph(carte, mapGraph);
 	}
 	
 	public long getTailleReservoir() {
@@ -115,9 +108,7 @@ public abstract class Robot {
 		this.occupied = state;
 	}
 	
-	private void initGraph(Carte carte) {
-		Graph graph = new Graph("My graph");
-		
+	private void initGraph(Carte carte, Graph mapGraph) {	
 		int nbLignes = carte.getNbLignes();
 		int nbColonnes = carte.getNbColonnes();
 		int cellSize = carte.getTailleCase();
@@ -127,14 +118,14 @@ public abstract class Robot {
 				
 				if (this.peutDeplacer(carte.getCase(index_lin, index_col).getNature())) {
 					Node current = new Node(carte.getCase(index_lin, index_col));
-					graph.addNode(current);
+					mapGraph.addNode(current);
 					
 					if (index_lin != 0) {
 						if (this.peutDeplacer(carte.getCase(index_lin - 1, index_col).getNature())) {
 							double timeNord = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin - 1, index_col), cellSize);
 							
-							Node voisinNord = graph.getNodeFromCase(carte.getCase(index_lin - 1, index_col));
-							graph.addEdge(voisinNord, current, timeNord);
+							Node voisinNord = mapGraph.getNodeFromCase(carte.getCase(index_lin - 1, index_col));
+							mapGraph.addEdge(voisinNord, current, timeNord);
 						}
 					}
 					
@@ -142,14 +133,13 @@ public abstract class Robot {
 						if (this.peutDeplacer(carte.getCase(index_lin, index_col - 1).getNature())) {
 							double timeOuest = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin, index_col - 1), cellSize);
 							
-							Node voisinOuest = graph.getNodeFromCase(carte.getCase(index_lin, index_col - 1));
-							graph.addEdge(voisinOuest, current, timeOuest);
+							Node voisinOuest = mapGraph.getNodeFromCase(carte.getCase(index_lin, index_col - 1));
+							mapGraph.addEdge(voisinOuest, current, timeOuest);
 						}
 					}
 				}
 			}
 		}
-		this.mapGraph = graph;
 	}
 	
 	private double calculateMeanSpeed(Robot robot, Case firstCell, Case secondCell, int cellSize) {
@@ -162,6 +152,9 @@ public abstract class Robot {
 		return this.mapGraph;
 	}
 
+	public void RestartPosition() {
+		this.setPosition(this.positionRestart);
+	}
 	
 
 	public Path getShortestPath(Case position, Case destination) {

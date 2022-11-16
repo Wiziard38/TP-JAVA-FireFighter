@@ -31,6 +31,5 @@ public class TestSimulateur {
         //Robot robot = jeuDeDonnees.getRobots()[0];
         ChefPompier chef= new ChefPompier(simu,jeuDeDonnees);
         chef.start();
-        
 	}
 }

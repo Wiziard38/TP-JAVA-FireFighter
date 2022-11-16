@@ -30,6 +30,7 @@ public class Simulateur implements Simulable{
 	public DonneesSimulation getJeuDeDonnees() {
 		return this.jeuDeDonnees;
 	}
+	
 	public void ajouteEvenement(Evenement e) {
 		this.listEvenement.ajouteEvenement(e);
 	}
@@ -39,7 +40,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void incrementeDate() {
-		this.dateSimulation += 20;
+		this.dateSimulation += 40;
 	}
 	
 	public long getDateSimulation() {
@@ -70,7 +71,6 @@ public class Simulateur implements Simulable{
 		} catch (DataFormatException e) {
 			e.printStackTrace();
 		}
-		
 	}
 
 	public void next() {
@@ -81,7 +81,7 @@ public class Simulateur implements Simulable{
 			while (flag) {
 				this.listEvenement.getPremier().execute();
 				this.listEvenement.suppPremier();
-				System.out.println(this.listEvenement.getPremier());
+				// System.out.println(this.listEvenement.getPremier());
 				if (this.listEvenement.getPremier() != null) {
 					flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation; 
 				}
@@ -94,7 +94,19 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void restart() {
-		return;
+		for (Robot robot : this.jeuDeDonnees.getRobots()) {
+			robot.RestartPosition();
+			robot.setOccupied(false);
+		}
+		for (Incendie incendie : this.jeuDeDonnees.getIncendies()) {
+			incendie.EauNecessaireRestart();
+			incendie.setTraite(false);
+		}
+		System.out.println("done");
+
+//		ChefPompier chef = new ChefPompier(this, this.jeuDeDonnees);
+//		System.out.println("ok");
+//        chef.start();
 	}
 
 	private void draw(DonneesSimulation jeuDeDonnes) {
