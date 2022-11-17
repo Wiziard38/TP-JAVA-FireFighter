@@ -1,6 +1,5 @@
 package io;
 
-
 import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
@@ -10,8 +9,6 @@ import robots.RobotAChenilles;
 import robots.RobotAPattes;
 import robots.RobotARoues;
 import robots.RobotDrone;
-
-
 
 /**
  * Lecteur de cartes au format spectifié dans le sujet.
@@ -52,7 +49,7 @@ public class LecteurDonnees {
     }
 
     /**
-     * Lit etretourne les donnees de la carte.
+     * Lit et retourne les donnees de la carte.
      * @throws ExceptionFormatDonnees
      */
     private Carte lireCarte() throws DataFormatException {

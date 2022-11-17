@@ -4,8 +4,9 @@ import io.Case;
 import io.Carte;
 import io.NatureTerrain;
 
+/**RobotDrone est un type particulier de robot*/
 public class RobotDrone extends RobotAerien {
-	/**RobotDrone est un type particulier de robot*/
+	
 	public RobotDrone(Case position, Carte carte, int vitesse) {
 		super(position, vitesse, 10000, RobotType.DRONE, carte);
 	}
@@ -19,7 +20,7 @@ public class RobotDrone extends RobotAerien {
 	}
 
 	@Override
-	public boolean peutDeplacer(NatureTerrain terrain) {
+	public boolean peutSeDeplacer(NatureTerrain terrain) {
 		return true;
 	}
 

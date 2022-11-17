@@ -34,7 +34,7 @@ public class Graph {
 	
 	public Node getNodeFromCase(Case myCase) {
 		for (Node node : this.getIte()) {
-			if (node.getCase().equal(myCase)) {
+			if (node.getCase().equals(myCase)) {
 				return node;
 			}
 		}

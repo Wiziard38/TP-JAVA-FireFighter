@@ -1,6 +1,7 @@
 package io;
 import robots.Robot;
 
+/**C'est un chef pompier classique qui assigne un feu au premier robot pompier trouvé non occupé*/
 public class ChefPompierSimple extends ChefPompier{
 	
 	public ChefPompierSimple(Simulateur simu) {
@@ -9,7 +10,7 @@ public class ChefPompierSimple extends ChefPompier{
 
 	public Robot getRobotPret(Case caseIncendie) {
 		for (Robot robot : this.getSimu().getJeuDeDonnees().getRobots()) {
-			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie) || robot.getPosition().equal(caseIncendie))) {
+			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie))) {
 				return robot;
 			}
 		}

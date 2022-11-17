@@ -4,9 +4,10 @@ import io.Case;
 import io.Direction;
 import io.NatureTerrain;
 import robots.Robot;
-import robots.RobotType;
+
+/**RemplissageReservoir permet à un robot de se remplir d'une certaine quantité d'eau*/
 public class RemplissageReservoir extends Evenement {
-	/**RemplissageReservoir permet à un robot de se remplir d'une certaine quantité d'eau*/
+	
 	private Robot robot;
 	private Carte carte;
 	private long EauRempli;
@@ -18,33 +19,29 @@ public class RemplissageReservoir extends Evenement {
 		this.EauRempli = eau;
 	}
 	
+	/**aCoteEau renvoie true si le robot se trouve à côté d'une case de type eau*/
 	private boolean aCoteEau() {
-		/**aCoteEau renvoie true si le robot se trouve à côté d'une case de type eau*/
-		Case caseN = robot.getPosition();
-		Case caseS = robot.getPosition();
-		Case caseE = robot.getPosition();
-		Case caseW = robot.getPosition();
 		Case caseAct = robot.getPosition();
+	
+		boolean flag = false;
 		if(carte.voisinExiste(caseAct, Direction.NORD)) {
-			caseN = carte.getVoisin(caseAct, Direction.NORD);
+			flag = flag | (carte.getVoisin(caseAct, Direction.NORD).getNature() == NatureTerrain.EAU);
 		}
 		if(carte.voisinExiste(caseAct, Direction.SUD)) {
-			caseS = carte.getVoisin(caseAct, Direction.SUD);
+			flag = flag | (carte.getVoisin(caseAct, Direction.SUD).getNature() == NatureTerrain.EAU);
 		}
 		if(carte.voisinExiste(caseAct, Direction.EST)) {
-			caseE = carte.getVoisin(caseAct, Direction.EST);
+			flag = flag | (carte.getVoisin(caseAct, Direction.EST).getNature() == NatureTerrain.EAU);
 		}
 		if(carte.voisinExiste(caseAct, Direction.OUEST)) {
-			caseW = carte.getVoisin(caseAct, Direction.OUEST);
+			flag = flag | (carte.getVoisin(caseAct, Direction.OUEST).getNature() == NatureTerrain.EAU);
 		}
-		return caseN.getNature() == NatureTerrain.EAU ||
-				caseS.getNature() == NatureTerrain.EAU ||
-				caseE.getNature() == NatureTerrain.EAU ||
-				caseW.getNature() == NatureTerrain.EAU;
+		return flag;
 	}
 	
+	/**peutSeRemplir renvoie true si le robot peut se remplir*/
 	private boolean peutSeRemplir() {
-		/**peutSeRemplir renvoie true si le robot peut se remplir*/
+
 		switch (this.robot.getType()) {
 		case DRONE:
 			return robot.getPosition().getNature() == NatureTerrain.EAU;

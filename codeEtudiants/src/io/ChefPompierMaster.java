@@ -1,7 +1,8 @@
 package io;
 
 import robots.Robot;
-import graph.Path;
+
+/**C'est la stratégie évoluée où le chef pompier assigne à un feu le robot qui mettera le plus proche*/
 public class ChefPompierMaster extends ChefPompier{
 	
 	public ChefPompierMaster(Simulateur simu) {
@@ -12,11 +13,11 @@ public class ChefPompierMaster extends ChefPompier{
 		double min = Double.POSITIVE_INFINITY;
 		Robot robotUtilise = null;
 		for (Robot robot : this.getSimu().getJeuDeDonnees().getRobots()) {
-			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie) || robot.getPosition().equal(caseIncendie))) {
-				Path path = robot.getShortestPath(robot.getPosition(), caseIncendie);
-				double temps = robot.getTimeFromPath(path);
+			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie))) {
+				double temps = robot.getTimeFromPath(robot.getShortestPath(robot.getPosition(), caseIncendie));
 				if(temps< min) {
 					robotUtilise = robot;
+					min = temps;
 				}
 			}
 		}

@@ -4,9 +4,9 @@ import io.Case;
 import io.Carte;
 import io.NatureTerrain;
 
-
+/**RobotAChenilles est un type particuluer de robot*/
 public class RobotAChenilles extends RobotTerrestre {
-	/**RobotAChenilles est un type particuluer de robot*/
+	
 	public RobotAChenilles(Case position, Carte carte, int vitesse) {
 		super(position, vitesse, 2000,RobotType.CHENILLES, carte);
 	}
@@ -25,7 +25,7 @@ public class RobotAChenilles extends RobotTerrestre {
 	}
 
 	@Override
-	public boolean peutDeplacer(NatureTerrain terrain) {
+	public boolean peutSeDeplacer(NatureTerrain terrain) {
 		return !(terrain == NatureTerrain.EAU || terrain == NatureTerrain.ROCHE);
 	}
 

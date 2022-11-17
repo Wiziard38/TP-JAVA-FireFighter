@@ -1,13 +1,15 @@
 package io;
 import evenements.Evenement;
+import evenements.ListEvenement;
+
 import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
 import gui.*;
 import robots.Robot;
-import evenements.Evenement;
 
+/**Class qui gère le simulateur*/
 public class Simulateur implements Simulable{
-	/**Classe qui gère le simulateur*/
+	
 	
 	private final GUISimulator guiSimu;	
 	private int tailleCasesSimu;
@@ -23,18 +25,19 @@ public class Simulateur implements Simulable{
 		gui.setSimulable(this);
 	}
 	
+	/**On dessine la carte et on commence la simulation en demandant au chef pompier d'assigner
+	 * les tâches*/
 	public void start() {
-		/**On dessine la carte et on commence la simulation en demandant au chef pompier d'assigner
-		 * les tâches*/
 		draw(jeuDeDonnees);
 	}
 	
+	/**chooseMap permet de chosir une des cartes de simulation plus simplement pour les tests:
+	 * 0 = carteSUjet
+	 * 1 = desertOfDeath
+	 * 2 = mushroomOfHell
+	 * 3 = spiralOfMadness*/
 	public void chooseMap(int mapIndex) {
-		/**chooseMap permet de chosir une des cartes de simulation plus simplement pour les tests:
-		 * 0 = carteSUjet
-		 * 1 = desertOfDeath
-		 * 2 = mushroomOfHell
-		 * 3 = spiralOfMadness*/
+		
 		if (!((1 <= mapIndex) && (mapIndex <= 4))) {
 			throw new IllegalArgumentException("Le numero de carte doit etre cmpris entre 1 et 4");
 		}
@@ -68,9 +71,13 @@ public class Simulateur implements Simulable{
 		
 	}
 	
+	/**chooseChef permet de défnir quel chef pompier sera utilisé, donc la stratégie d'affectation
+	 * des feux:
+	 * - 1 = chef pompier basique
+	 * - 2 = chef pompier "master" avec stratégie plus évoluée
+	 */
 	public void chooseChef(int chefIndex) {
-		/**chooseChef permet de défnir quel chef pompier sera utilisé, donc la stratégie d'affectation
-		 * des feux*/
+		
 		if (!((1 <= chefIndex) && (chefIndex <= 2))) {
 			throw new IllegalArgumentException("Le numero de chef doit etre cmpris entre 1 et 2");
 		}
@@ -113,9 +120,10 @@ public class Simulateur implements Simulable{
 		return this.chef;
 	}
 
+	/**next éxecute les prochains événement dans la liste des événements
+	 * dont la date est inférieur à la date actuel du simulateur*/
 	public void next() {
-		/**next éxecute les prochains événement dans la liste des événements
-		 * dont la date est inférieur à la date actuel du simulateur*/
+		
 		incrementeDate();
 		
 		if (!this.chef.getSimulationOver()) {
@@ -125,17 +133,16 @@ public class Simulateur implements Simulable{
 		while (this.listEvenement.getPremier() != null && this.listEvenement.getPremier().getDate() <= this.dateSimulation) {
 			
 			this.listEvenement.getPremier().execute();
-			this.listEvenement.suppPremier();
+			this.listEvenement.supprPremier();
 				
 		}
 		draw(this.jeuDeDonnees);
 		
 	}
 	
-	
+	/**permet de restart la simulation pour la revoir*/
 	public void restart() {
 		this.dateSimulation = 0;
-		/**permet de restart la simulation pour la revoir*/
 		for (Robot robot : this.jeuDeDonnees.getRobots()) {
 			robot.RestartPosition();
 			robot.setOccupied(false);
@@ -145,6 +152,7 @@ public class Simulateur implements Simulable{
 			incendie.setTraite(Traitement.rien);
 		}
 
+		listEvenement.flush();
 		
 		if (this.chef.getType() == TypeChefPompier.Simple) {
 			this.chooseChef(1);
@@ -152,15 +160,13 @@ public class Simulateur implements Simulable{
 			this.chooseChef(2);
 		}
 		
-		System.out.println("Remise a zero de la simulation");
-				
+		System.out.println("Remise a zero de la simulation");	
 		draw(this.jeuDeDonnees);
-		
-		//this.chef.start();
 	}
 
+	/**Fonction qui dessine la carte entière, les incendies et les robots à leur position initial*/
 	private void draw(DonneesSimulation jeuDeDonnes) {
-		/**Fonction qui dessine la carte entière, les incendies et les robots à leur position initial*/
+		
 		guiSimu.reset();
 		this.x = 0;
 		this.y = 0;
@@ -197,8 +203,10 @@ public class Simulateur implements Simulable{
 			drawRobot(robots[i]);
 		}
 	}
+	
 	/*Les fonctions d'après permette chacune de dessiner un élément de la carte, un robot,
 	 *  un incendie ou une carte*/
+	
 	private void drawRobot(Robot robot) {
 		switch (robot.getType()) {
 		case DRONE:

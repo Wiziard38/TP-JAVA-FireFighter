@@ -2,8 +2,9 @@ package evenements;
 import io.Incendie;
 import robots.Robot;
 
+/** Evénement qui permet à un robot de verser une certaine quantité d'eau*/
 public class VerserEau extends Evenement {
-	/** Evénement qui permet à un robot de verser une certaine quantité d'eau*/
+	
 	private Incendie incendie;
 	private Robot robot;
 	private long eauAVerser;
@@ -18,7 +19,7 @@ public class VerserEau extends Evenement {
 	@Override
 	public void execute() {
 		//On vérifie que le robot est bien sur un incendie
-		if (robot.getPosition().equal(this.incendie.getPosition())) {
+		if (robot.getPosition().equals(this.incendie.getPosition())) {
 			this.incendie.setEauNecessaire(Math.max(this.incendie.getEauNecessaire()-this.eauAVerser,0));
 			robot.setEauRestante(Math.max(robot.getEauRestante() - this.eauAVerser, 0));
 		}

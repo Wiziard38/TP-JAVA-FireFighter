@@ -2,17 +2,13 @@ package robots;
 
 import io.*;
 import graph.*;
-
 import java.util.List;
+import evenements.*;
 
-import evenements.Deplacement;
-import evenements.RemplissageReservoir;
-import evenements.VerserEau;
-
-
+/**Classe mère de tous les différents types de robot, elle rassemble tout ce qui est 
+ * commun à un robot*/
 public abstract class Robot {
-	/**Classe mère de tous les différents types de robot, elle rassemble tout ce qui est 
-	 * commun à un robot*/
+	
 	private final Case positionRestart;
 	private Case position;
 	private int vitesse;
@@ -52,7 +48,7 @@ public abstract class Robot {
 	}
 	
 	public void setPosition(Case newPosition) {
-		if (!this.peutDeplacer(newPosition.getNature())) {
+		if (!this.peutSeDeplacer(newPosition.getNature())) {
 			System.out.println("Impossible de se déplacer ici!");
 		}
 		else {
@@ -105,11 +101,12 @@ public abstract class Robot {
 		this.occupied = state;
 	}
 	
+	/**Fonction qui initialise le graph du robot. Le graph est composé des cases où il peut se rendre
+	 * comme noeuds et les noeuds sont reliés par une branche si le robot peut passer de l'une à 
+	 * l'autre. Chacune des branches possède un poids correspondant au temps pour passer d'une case
+	 * à l'autre*/
 	private void initGraph(Carte carte, Graph mapGraph) {
-		/**Fonction qui initialise le graph du robot. Le graph est composé des cases où il peut se rendre
-		 * comme noeuds et les noeuds sont reliés par une branche si le robot peut passer de l'une à 
-		 * l'autre. Chacune des branches possède un poid correspondant au temps pour passer d'une case
-		 * à l'autre*/
+		
 		int nbLignes = carte.getNbLignes();
 		int nbColonnes = carte.getNbColonnes();
 		int cellSize = carte.getTailleCase();
@@ -117,12 +114,12 @@ public abstract class Robot {
 		for (int index_col = 0; index_col < nbColonnes; index_col++) {
 			for (int index_lin = 0; index_lin < nbLignes; index_lin++) {
 				
-				if (this.peutDeplacer(carte.getCase(index_lin, index_col).getNature())) {
+				if (this.peutSeDeplacer(carte.getCase(index_lin, index_col).getNature())) {
 					Node current = new Node(carte.getCase(index_lin, index_col));
 					mapGraph.addNode(current);
 					
 					if (index_lin != 0) {
-						if (this.peutDeplacer(carte.getCase(index_lin - 1, index_col).getNature())) {
+						if (this.peutSeDeplacer(carte.getCase(index_lin - 1, index_col).getNature())) {
 							double timeNord = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin - 1, index_col), cellSize);
 							
 							Node voisinNord = mapGraph.getNodeFromCase(carte.getCase(index_lin - 1, index_col));
@@ -131,7 +128,7 @@ public abstract class Robot {
 					}
 					
 					if (index_col != 0) {
-						if (this.peutDeplacer(carte.getCase(index_lin, index_col - 1).getNature())) {
+						if (this.peutSeDeplacer(carte.getCase(index_lin, index_col - 1).getNature())) {
 							double timeOuest = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin, index_col - 1), cellSize);
 							
 							Node voisinOuest = mapGraph.getNodeFromCase(carte.getCase(index_lin, index_col - 1));
@@ -143,8 +140,9 @@ public abstract class Robot {
 		}
 	}
 	
+	/**Calcule la vitesse du robot en fonction du terrain*/
 	private double calculateMeanSpeed(Robot robot, Case firstCell, Case secondCell, int cellSize) {
-		/**Calcule la vitesse du robot en fonction du terrain*/
+		
 		int v1 = robot.getVitesse(firstCell.getNature());
 		int v2 = robot.getVitesse(secondCell.getNature());
 		return (double) (2 * cellSize / (v1 + v2));
@@ -158,10 +156,10 @@ public abstract class Robot {
 		this.setPosition(this.positionRestart);
 	}
 	
-
+	/**Calcule le plus court chemin de la case position à la case destination est retourne ce
+	 * chemin*/
 	public Path getShortestPath(Case position, Case destination) {
-		/**Calcule le plus court chemin de la case position à la case destination est reoturne ce
-		 * chemin*/
+		
 		Graph graph = this.getGraph();
 		
 		Dijkstra dijkstra = new Dijkstra();
@@ -169,7 +167,7 @@ public abstract class Robot {
 		dijkstra.setSource(position);
 		dijkstra.compute();
 
-		if (!peutDeplacer(destination.getNature())) { // Impossible objective
+		if (!peutSeDeplacer(destination.getNature())) { // Impossible objective
 			return null;
 		}
 
@@ -180,30 +178,34 @@ public abstract class Robot {
 		return dijkstra.getShortestPath(destination);
 	}
 	
+	/**existsPathTo regarde si le robot peut se rendre sur la case objective et renvoie true s'il
+	 * peut false sinon*/
 	public boolean existsPathTo(Case objective) {
-		/**existsPathTo regarde si le robot peut se rendre sur la case objective et renvoie true s'il
-		 * peut false sinon*/
+		
 		return (getShortestPath(this.getPosition(), objective) != null);
 	}
 
+	/**getTimeFromPath caclule le temps que le robot mettera pour faire le chemin path*/
 	public double getTimeFromPath(Path path) {
-		/**getTimeFromPath caclule le temps que le robot mettera pour faire le chemin path*/
+		
 		if (path == null) {
 			return Long.MAX_VALUE; 
 		}
 		return path.getPathLength();
 	}
 	
+	/**goTo calcule le chemin le plus court pour que ce robot se déplace sur la case objective
+	 * et créer la sutie d'événement nécessaire pour s'y rendre */
 	public long goTo(Case objective, Simulateur simulateur, long dateDebut) {
-		/**goTo calcule le chemin le plus court pour que ce robot se déplace sur la case objective
-		 * et créer la sutie d'événement nécessaire pour s'y rendre */
+		
 		Path path = this.getShortestPath(this.getPosition(), objective);
 		return execPath(path, this.getPosition(), simulateur, dateDebut);
 	}
 	
+	/**execPath gènere la suite d'événement nécessaire pour faire le chemin path depuis la case
+	 * currentPosition*/
 	private long execPath(Path shortestPath, Case currentPosition, Simulateur simulateur, long dateDebut) {
-		/**execPath gènere la suite d'événement nécessaire pour faire le chemin path depuis la case
-		 * currentPosition*/
+		
 		Node currentNode = this.mapGraph.getNodeFromCase(currentPosition) ;
 		long current_date = dateDebut;
 		
@@ -227,9 +229,10 @@ public abstract class Robot {
 		return current_date;
 	}
 
+	/**deverserEau gènere une événement de déverssement d'eau sur incendie d'une quantité d'eau
+	 * de volume eauAVerser*/
 	public long deverserEau(Incendie incendie, long eauAVerser, Simulateur simulateur, long dateDebut) {
-		/**deverserEau gènere une événement de déverssement d'eau sur incendie d'une quantité d'eau
-		 * de volume eauAVerser*/
+		
 		long dateFin = dateDebut;
 		dateFin += (eauAVerser % this.getQuantiteVersementUnitaire() == 0) ? (eauAVerser/this.getQuantiteVersementUnitaire()) * this.getTempsVersementUnitaire() : (eauAVerser / this.getQuantiteVersementUnitaire() + 1) * this.getTempsVersementUnitaire();
 
@@ -238,9 +241,10 @@ public abstract class Robot {
 		return dateFin;
 	}
 	
+	/**recharcherEau gènere des événements de déplacement jusqu'à une case où ce robot peut 
+	 * se rechercher et un événement de rechargement d'eau de ce robot sur une case waterPos*/
 	public long rechargerEau(Simulateur simu, long dateDebut, Case currentPos, Case waterPos) {
-		/**recharcherEau gènere des événements de déplacement jusqu'à une case où ce robot peut 
-		 * se rechercher et un événement de rechargement d'eau de ce robot sur une case waterPos*/
+		
 		long currentDate = dateDebut;
 		
 		// Aller a l'eau
@@ -257,8 +261,9 @@ public abstract class Robot {
 		return currentDate;
 	}
 	
+	/**traite incendie gènere la suite d'événements nécessaire pour que ce robot éteigne incendie*/
 	public void traiteIncendie(Simulateur simulateur, Incendie incendie) {
-		/**traite incendie gènere la suite d'événements nécessaire pour que ce robot éteigne incendie*/
+		
 		this.setOccupied(true);
 		incendie.setRobotQuiTraite(this);
 		long currentDate = simulateur.getDateSimulation();
@@ -294,9 +299,10 @@ public abstract class Robot {
 		}
 		simulateur.ajouteEvenement(new Fini(this, incendie, currentDate+1));
 	}
-
+	
+	/** Module la quantite d'eau reellement versée pour correspondre a un multiple de deversements unitaires*/
 	public long getVraieEauVersee(long eauSouhaitee) {
-		/**????*/
+		
 		long eauReelle;
 		long versementUnitaire = this.getQuantiteVersementUnitaire();
 		if (eauSouhaitee % versementUnitaire == 0) {
@@ -312,6 +318,6 @@ public abstract class Robot {
 	public abstract long getQuantiteVersementUnitaire();
 	public abstract long getTempsRemplissage();
 	public abstract Case getClosestWater(Simulateur simulateur, Case currentPos);
-	public abstract boolean peutDeplacer(NatureTerrain terrain);
+	public abstract boolean peutSeDeplacer(NatureTerrain terrain);
 	public abstract String getNameRobot();
 }

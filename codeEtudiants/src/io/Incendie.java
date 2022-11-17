@@ -1,8 +1,10 @@
 package io;
+
 import robots.Robot;
 
+/**Incendie implemente les incendies des cartes*/
 public class Incendie {
-	/**Incendie implemente les incendies des cartes*/
+	
 	private final Case position;
 	private long eauNecessaire;
 	private final long eauNecessaireRestart;
@@ -40,12 +42,8 @@ public class Incendie {
 		return this.eauNecessaire;
 	}
 	
-//	public void setPosition(Case newPos) {
-//		this.position = newPos;
-//	}
-	
-	public void setEauNecessaire(long newQuant) {
-		this.eauNecessaire = newQuant;
+	public void setEauNecessaire(long newQuantite) {
+		this.eauNecessaire = newQuantite;
 	}
 	
 	public void EauNecessaireRestart() {

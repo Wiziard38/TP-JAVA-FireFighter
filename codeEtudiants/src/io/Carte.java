@@ -1,7 +1,8 @@
 package io;
 
+/**La classe qui représente la carte sur lesquels les robots évoluent*/
 public class Carte {
-	/**La classe qui représente la carte sur lesquels les robots évoluent*/
+	
 	private int tailleCase;
 	private Case tab[][];
 	private int nbLignes;
@@ -34,8 +35,9 @@ public class Carte {
 		this.tab[lig][col] = c;
 	}
 	
+	/** Retourne vraie si il existe une case adjacente dans la direction dir de la case src et faux sinon*/
 	public boolean voisinExiste(Case src, Direction dir) {
-		/** Retourne vraie si il existe une case adjacente dans la direction dir de la case src et faux sinon*/
+		
 		switch(dir) {
 		case NORD:
 			return src.getLigne() - 1>= 0;
@@ -50,10 +52,11 @@ public class Carte {
 		}
 	}
 	
+	/** Retourne la case voisine à src dans la direction dir, attention pas de précaution prise à ca moment
+	 * 	C'est à l'utilisateur de penser à appeler voisinExiste avant
+	 */
 	public Case getVoisin(Case src, Direction dir) {
-		/** Retourne la case voisine à src dans la direction dir, attention pas de précaution prise à ca moment
-		 * 	C'est à l'utilisateur de penser à appeler voisinExiste avant
-		 */
+		
 		switch(dir) {
 		case NORD:
 			return this.tab[src.getLigne()-1][src.getColonne()];
@@ -68,10 +71,11 @@ public class Carte {
 		}
 	}
 	
+	/** Retourne la direction du prochain déplacement à effectuer pour aller de la case origin
+	 * à la case source 
+	 */
 	public Direction getDirection(Case origin, Case dest) {
-		/** Retourne la direction du prochain déplacement à effectuer pour aller de la case origin
-		 * à la case source 
-		 */
+		
 		if (origin.getLigne() == dest.getLigne()) {
 			if (origin.getColonne() > dest.getColonne()) {
 				return Direction.OUEST;

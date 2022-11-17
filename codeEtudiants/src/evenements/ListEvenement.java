@@ -1,10 +1,9 @@
-package io;
+package evenements;
 
-import evenements.Evenement;
-
+/**ListEvenement implémente une liste chainé d'événement triée par rapport à la date d'éxecution de 
+ * l'événement avec une référence vers le premier et le dernier*/
 public class ListEvenement {
-	/**ListEvenement implémente une liste chainé d'événement triée par rapport à la date d'éxecution de 
-	 * l'événement avec une référence vers le premier et le dernier*/
+	
 	private Evenement premier;
 	private Evenement dernier;
 	
@@ -17,9 +16,10 @@ public class ListEvenement {
 		return this.premier;
 	}
 	
+	/**Cette fonction ajoute un événement dans la liste à la bonne place i.e la liste reste
+	 * triée par rapport à la date des événements*/
 	public void ajouteEvenement(Evenement e) {
-		/**Cette fonction ajoute un événement dans la liste à la bonne place i.e la liste reste
-		 * triée par rapport à la date des événements*/
+		
 		Evenement evCourant = premier;
 		if (evCourant == null) {
 			e.setSuivant(evCourant);
@@ -51,17 +51,24 @@ public class ListEvenement {
 		}
 	}
 	
+	/** ajoute à la fin de la liste, cette fonction est moins couteuses que ajouteEvenement grâce 
+	 * à la référence vers la fin de la liste
+	 */
 	public void ajouteFin(Evenement e) {
-		/** ajoute à la fin de la liste, cette fonction est moins couteuses que ajouteEvenement grâce 
-		 * à la référence vers la fin de la liste
-		 */
 		this.dernier.setSuivant(e);
 		this.dernier = this.dernier.getSuivant();
 	}
 	
-	public void suppPremier() {
+	public void supprPremier() {
 		if (this.premier != null) {
 			this.premier = this.premier.getSuivant();
+		}
+	}
+	
+	/**Fonction qui supprime tous les événements de la liste*/
+	public void flush() {
+		while (this.premier != null) {
+			this.supprPremier();
 		}
 	}
 }

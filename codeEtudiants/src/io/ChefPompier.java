@@ -1,8 +1,9 @@
 package io;
 import robots.Robot;
 
+/**ChefPompier implemente un un chef pompier générale sans stratégie, elle est a définir dans des classes filles*/
 public abstract class ChefPompier {
-	/**ChefPompier implemente un un chef pompier générale sans stratégie, elle est a définir dans des classes filles*/
+	
 	private Simulateur simu;
 	private boolean simulationOver;
 	private final TypeChefPompier type;
@@ -20,8 +21,9 @@ public abstract class ChefPompier {
 	public Simulateur getSimu() {
 		return this.simu;
 	}
+	/**feuTousEteind qui nous permet de savoir si tous les feux de la carte sont éteinds */
 	private boolean feuTousEteind() {
-		/**feuTousEteind qui nous permet de savoir si tous les feux de la carte sont éteinds */
+		
 		for(Incendie incendie: simu.getJeuDeDonnees().getIncendies()) {
 			if(incendie.getTraite() != Traitement.eteind) {
 				return false;
@@ -29,11 +31,12 @@ public abstract class ChefPompier {
 		}
 		return true;
 	}
-
+	
+	/** resteFeu nous permet de savoir si il reste un feu qui n'est pas encore traité i.e
+	 * si aucun robot s'occupe d'éteindre se feu. La fonction retourne un feu si il en reste un non
+	 * traité et sinon renvoie null*/
 	private Incendie resteFeu() {
-		/** resteFeu nous permet de savoir si il reste un feu qui n'est pas encore traité i.e
-		 * si aucun robot s'occupe d'éteindre se feu. La fonction retourne un feu si il en reste un non
-		 * traité et sinon renvoie null*/
+		
 		for (Incendie incendie : simu.getJeuDeDonnees().getIncendies()) {
 			if (incendie.getEauNecessaire() != 0 && incendie.getTraite() == Traitement.rien) {
 				incendie.setTraite(Traitement.traite);
@@ -43,8 +46,8 @@ public abstract class ChefPompier {
 		return null;
 	}
 
+	/** La fonction principal du chef pompier, elle attribue les différents incendies au robot*/
 	public void assigneIncendie() {
-		/** La fonction principal du chef pompier, elle attribue les différents incendies au robot*/
 		if (!feuTousEteind()) {
 			/*Ce while nous permet de nous assuré que si un feu est resté allumé est plus traité nous
 			 le remetons dans le bonne état pour finir de le traité*/

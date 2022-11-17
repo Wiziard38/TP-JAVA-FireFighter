@@ -4,9 +4,9 @@ import io.Case;
 import io.Carte;
 import io.NatureTerrain;
 
-
+/**RobotAPattes est un type particulier de robot*/
 public class RobotAPattes extends RobotTerrestre {
-	/**RobotAPattes est un type particulier de robot*/
+	
 	public RobotAPattes(Case position, Carte carte) {
 		super(position, 30, Long.MAX_VALUE, RobotType.PATTES, carte);
 	}
@@ -18,7 +18,7 @@ public class RobotAPattes extends RobotTerrestre {
 	}
 
 	@Override
-	public boolean peutDeplacer(NatureTerrain terrain) {
+	public boolean peutSeDeplacer(NatureTerrain terrain) {
 		return !(terrain == NatureTerrain.EAU);
 	}
 

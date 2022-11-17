@@ -1,9 +1,11 @@
-package io;
-import evenements.Evenement;
+package evenements;
+
+import io.Incendie;
+import io.Traitement;
 import robots.Robot;
 
+/**Un événement qui s'execute quand un robot à fini de traité un incendie*/
 public class Fini extends Evenement {
-	/**Un événement qui s'execute quand un robot à fini de traité un incendie*/
 	
 	private Robot robot;
 	private Incendie incendie;
@@ -13,6 +15,7 @@ public class Fini extends Evenement {
 		this.robot = robot;
 		this.incendie = incendie;
 	}
+	
 	@Override
 	public void execute() {
 		this.robot.setOccupied(false);
