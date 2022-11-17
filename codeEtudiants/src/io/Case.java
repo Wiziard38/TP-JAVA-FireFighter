@@ -22,7 +22,7 @@ public class Case {
 	
 	public NatureTerrain getNature() {
 		return this.nature;
-	}
+	}	
 	
 	@Override
 	public boolean equals(Object o) {
@@ -35,6 +35,6 @@ public class Case {
 	
 	@Override
 	public String toString() {
-		return String.format("x : %d / y : %d", this.getLigne(), this.getColonne());
+		return String.format("(%d;%d)", this.getLigne(), this.getColonne());
 	}
 }

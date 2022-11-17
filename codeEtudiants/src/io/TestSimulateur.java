@@ -13,9 +13,8 @@ public class TestSimulateur {
         GUISimulator gui = new GUISimulator(800, 600, Color.WHITE);
         
         Simulateur simu = new Simulateur(gui);
-        simu.chooseMap(3);
-        simu.chooseChef(1);
+        simu.chooseMap(1);
+        simu.chooseChef(2);
         simu.start();
-
 	}
 }

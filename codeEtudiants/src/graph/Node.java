@@ -2,9 +2,10 @@ package graph;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import io.Case;
 
+/** Class permettant de représenter les noeuds d'un graph. Ces noeuds sont associés aux cases de la carte.
+ * Les noeuds sont reliés a leur voisins directs par un temps correspondant au temps de parcours du robot*/
 public class Node{
 	private Case caseLinked;
 	private Map<Node, Double> adjacentNodes = new HashMap<>();
@@ -25,6 +26,7 @@ public class Node{
 		return this.adjacentNodes.get(voisin);
 	}
 
+	/** Renvoie un iterateur sur les voisins du noeud donné*/
 	public Map<Node, Double> getVoisins() {
 		return this.adjacentNodes;
 	}

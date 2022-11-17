@@ -5,7 +5,7 @@ import graph.*;
 import java.util.List;
 import evenements.*;
 
-/**Classe mère de tous les différents types de robot, elle rassemble tout ce qui est 
+/**Class mère de tous les différents types de robot, elle rassemble tout ce qui est 
  * commun à un robot*/
 public abstract class Robot {
 	
@@ -159,7 +159,7 @@ public abstract class Robot {
 	/**Calcule le plus court chemin de la case position à la case destination est retourne ce
 	 * chemin*/
 	public Path getShortestPath(Case position, Case destination) {
-		
+
 		Graph graph = this.getGraph();
 		
 		Dijkstra dijkstra = new Dijkstra();
@@ -263,7 +263,6 @@ public abstract class Robot {
 	
 	/**traite incendie gènere la suite d'événements nécessaire pour que ce robot éteigne incendie*/
 	public void traiteIncendie(Simulateur simulateur, Incendie incendie) {
-		
 		this.setOccupied(true);
 		incendie.setRobotQuiTraite(this);
 		long currentDate = simulateur.getDateSimulation();

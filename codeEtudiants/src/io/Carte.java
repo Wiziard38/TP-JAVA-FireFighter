@@ -74,18 +74,24 @@ public class Carte {
 	/** Retourne la direction du prochain déplacement à effectuer pour aller de la case origin
 	 * à la case source 
 	 */
-	public Direction getDirection(Case origin, Case dest) {
-		
-		if (origin.getLigne() == dest.getLigne()) {
-			if (origin.getColonne() > dest.getColonne()) {
+	public Direction getDirection(Case origin, Case destination) {
+		if (origin.getLigne() == destination.getLigne()) {
+			if (origin.getColonne() > destination.getColonne()) {
+				if (origin.getColonne() != destination.getColonne() + 1)
+					throw new IllegalArgumentException("Cases non voisines !");
 				return Direction.OUEST;
 			}
+			if (origin.getColonne() != destination.getColonne() - 1)
+				throw new IllegalArgumentException("Cases non voisines !");
 			return Direction.EST;
 		}
-		if (origin.getLigne() > dest.getLigne()) {
+		if (origin.getLigne() > destination.getLigne()) {
+			if (origin.getLigne() != destination.getLigne() + 1)
+				throw new IllegalArgumentException("Cases non voisines !");
 			return Direction.NORD;
 		}
+		if (origin.getLigne() != destination.getLigne() - 1)
+			throw new IllegalArgumentException("Cases non voisines !");
 		return Direction.SUD;
 	}
-	
 }
