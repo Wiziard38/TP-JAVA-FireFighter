@@ -267,6 +267,7 @@ public abstract class Robot {
 	
 	public void traiteIncendie(Simulateur simulateur, Incendie incendie) {
 		this.setOccupied(true);
+		incendie.setRobotQuiTraite(this);
 		long currentDate = simulateur.getDateSimulation();
 		long eauIncendie = incendie.getEauNecessaire();
 		long eauReservoir = this.getEauRestante();
@@ -298,7 +299,7 @@ public abstract class Robot {
 				}
 			}
 		}
-		simulateur.ajouteEvenement(new Fini(this, currentDate));
+		simulateur.ajouteEvenement(new Fini(this, incendie, currentDate));
 	}
 
 	public long getVraieEauVersee(long eauSouhaitee) {

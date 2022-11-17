@@ -1,6 +1,6 @@
 package io;
 import robots.Robot;
-
+import java.lang.Thread;
 public class ChefPompier {
 	private Simulateur simu;
 	private DonneesSimulation jeuDeDonnees;
@@ -40,8 +40,18 @@ public class ChefPompier {
 
 	public void start() {
 		while(!feuTousEteind()) {
+			System.out.println("oui");
+			try {
+				Thread.sleep(1000);
+			}
+			catch(Exception e) {
+				System.out.println("oui");
+			}
 			for (Incendie incendie: jeuDeDonnees.getIncendies()) {
-				if(incendie.getTraite() == Traitement.traite) {
+				if (incendie.getEauNecessaire() == 0) {
+					incendie.setTraite(Traitement.eteind);
+				}
+				if(incendie.getTraite() == Traitement.traite && incendie.getRobotQuiTraite() == null) {
 					incendie.setTraite(Traitement.rien);
 				}
 			}
