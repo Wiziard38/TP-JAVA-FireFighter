@@ -5,9 +5,11 @@ public class ChefPompier {
 	/**ChefPompier implemente un chef pompier basique qui gère les robots de la manière suivante:
 	 * Il donne le premier feu non eteind au premier robot qu'il trouve pas occupé*/
 	private Simulateur simu;
+	private boolean simulationOver;
 	
 	public ChefPompier(Simulateur simu) {
 		this.simu = simu;
+		this.simulationOver = false;
 	}
 	
 	private boolean feuTousEteind() {
@@ -44,17 +46,12 @@ public class ChefPompier {
 		return null;
 	}
 
-	public void start() {
+	public void assigneIncendie() {
 		/** La fonction principal du chef pompier, elle attribue les différents incendies au robot*/
-		while(!feuTousEteind()) {
+		if (!feuTousEteind()) {
 			/*Ce while nous permet de nous assuré que si un feu est resté allumé est plus traité nous
 			 le remetons dans le bonne état pour finir de le traité*/
-			try {
-				Thread.sleep(1000);
-			}
-			catch(Exception e) {
-				System.out.println("oui");
-			}
+			
 			for (Incendie incendie: this.simu.getJeuDeDonnees().getIncendies()) {
 				/* Si les feux n'ont plus besoin d'eaux ils sont éteinds donc on passe leur étét en
 				 * "éteinds"
@@ -65,17 +62,24 @@ public class ChefPompier {
 					incendie.setTraite(Traitement.rien);
 				}
 			}
+			
 			Incendie incendieATraite = resteFeu();
-			while (incendieATraite != null) {
+			if (incendieATraite != null) {
 				Robot robotTraite= getRobotPret(incendieATraite.getPosition());
-				while(robotTraite == null){
-					robotTraite= getRobotPret(incendieATraite.getPosition());
+				if(robotTraite != null) {
+					/* On prend un incendie non traite un robot non occupé et on lui demande de s'en occuper*/
+					robotTraite.traiteIncendie(simu, incendieATraite);
+					incendieATraite = resteFeu();
 				}
-				/* On prend un incendie non traite un robot non occupé et on lui demande de s'en occuper*/
-				robotTraite.traiteIncendie(simu, incendieATraite);
-				incendieATraite = resteFeu();
+				
 			}
+		} else {
+			System.out.println("Tous les incendies sont eteints");
+			this.simulationOver = true;
 		}
-		System.out.println("Tous les incendies sont eteints");
+	}
+	
+	public boolean getSimulationOver() {
+		return this.simulationOver;
 	}
 }

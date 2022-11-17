@@ -41,7 +41,6 @@ public class Simulateur implements Simulable{
 		/**On dessine la carte et on commence la simulation en demandant au chef pompier d'assigner
 		 * les tâches*/
 		draw(jeuDeDonnees);
-		this.chef.start();
 	}
 	
 	public void chooseMap(int mapIndex) {
@@ -50,23 +49,23 @@ public class Simulateur implements Simulable{
 		 * 1 = desertOfDeath
 		 * 2 = mushroomOfHell
 		 * 3 = spiralOfMadness*/
-		if (!((0 <= mapIndex) && (mapIndex <= 3))) {
-			throw new IllegalArgumentException("Le numero de carte doit etre cmpris entre 1 et 3");
+		if (!((1 <= mapIndex) && (mapIndex <= 4))) {
+			throw new IllegalArgumentException("Le numero de carte doit etre cmpris entre 1 et 4");
 		}
 		
 		DonneesSimulation jeuDeDonnees = null;
 		try {
 			switch (mapIndex) {
-			case 0:
+			case 1:
 				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/carteSujet.map");
 				break;
-			case 1:
+			case 2:
 				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
 				break;
-			case 2:
+			case 3:
 				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/mushroomOfHell-20x20.map");
 				break;
-			case 3:
+			case 4:
 				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
 				break;
 			}
@@ -86,15 +85,15 @@ public class Simulateur implements Simulable{
 	public void chooseChef(int chefIndex) {
 		/**chooseChef permet de défnir quel chef pompier sera utilisé, donc la stratégie d'affectation
 		 * des feux*/
-		if (!((0 <= chefIndex) && (chefIndex <= 1))) {
-			throw new IllegalArgumentException("Le numero de carte doit etre cmpris entre 1 et 3");
+		if (!((1 <= chefIndex) && (chefIndex <= 2))) {
+			throw new IllegalArgumentException("Le numero de chef doit etre cmpris entre 1 et 2");
 		}
 		
 		switch (chefIndex) {
-		case 0:
+		case 1:
 			this.chef = new ChefPompier(this);
 			break;
-		case 1:
+		case 2:
 			// TODO ajouter deuxieme chef
 			// this.chef = new ... (this);
 			break;
@@ -132,9 +131,13 @@ public class Simulateur implements Simulable{
 	public void next() {
 		/**next éxecute les prochains événement dans la liste des événements
 		 * dont la date est inférieur à la date actuel du simulateur*/
-		incrementeDate();		
+		incrementeDate();
 		
-		if (this.listEvenement.getPremier() != null && this.listEvenement.getPremier().getDate() <= this.dateSimulation) {
+		if (!this.chef.getSimulationOver()) {
+			this.chef.assigneIncendie();
+		}
+		
+		while (this.listEvenement.getPremier() != null && this.listEvenement.getPremier().getDate() <= this.dateSimulation) {
 			
 			this.listEvenement.getPremier().execute();
 			this.listEvenement.suppPremier();
@@ -161,7 +164,7 @@ public class Simulateur implements Simulable{
 
 		
 //		if (this.chef.getClass().getTypeName() == "ChefPompier") {
-		this.chooseChef(0);
+		this.chooseChef(1);
 //		}
 		
 		System.out.println("Remise a zero de la simulation");

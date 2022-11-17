@@ -14,7 +14,7 @@ public class TestSimulateur {
         
         Simulateur simu = new Simulateur(gui);
         simu.chooseMap(3);
-        simu.chooseChef(0);
+        simu.chooseChef(1);
         simu.start();
 
 	}
