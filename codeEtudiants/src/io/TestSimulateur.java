@@ -29,8 +29,7 @@ public class TestSimulateur {
         Simulateur simu = new Simulateur(gui);
         DonneesSimulation jeuDeDonnees = simu.getJeuDeDonnees();
         //Robot robot = jeuDeDonnees.getRobots()[0];
-        ChefPompier chef= new ChefPompier(simu,jeuDeDonnees);
+        MasterChefPompier chef= new MasterChefPompier(simu,jeuDeDonnees);
         chef.start();
-        
 	}
 }

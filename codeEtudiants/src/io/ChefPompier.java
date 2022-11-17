@@ -1,7 +1,7 @@
 package io;
 import robots.Robot;
 
-public class ChefPompier {
+public abstract class ChefPompier {
 	private Simulateur simu;
 	private DonneesSimulation jeuDeDonnees;
 	
@@ -20,13 +20,10 @@ public class ChefPompier {
 		return null;
 	}
 	
-	private Robot getRobotPret(Case caseIncendie) {
-		for (Robot robot : jeuDeDonnees.getRobots()) {
-			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie) || robot.getPosition().equal(caseIncendie))) {
-				return robot;
-			}
-		}
-		return null;
+	public abstract Robot getRobotPret(Case caseIncendie);
+	
+	public DonneesSimulation getJeuDeDonnees() {
+		return this.jeuDeDonnees;
 	}
 
 	public void start() {
@@ -34,6 +31,12 @@ public class ChefPompier {
 		while (incendieATraite != null) {
 			Robot robotTraite= getRobotPret(incendieATraite.getPosition());
 			while(robotTraite == null){
+				try {
+					Thread.sleep(1000);
+				}
+				catch (Exception e) {
+					System.out.println(e);
+				}
 				robotTraite= getRobotPret(incendieATraite.getPosition());
 			}
 			robotTraite.traiteIncendie(simu, incendieATraite);
