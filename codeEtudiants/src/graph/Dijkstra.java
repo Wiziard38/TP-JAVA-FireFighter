@@ -17,14 +17,11 @@ import donnees.Direction;
  *  Dans cet algorithme, on va venir evaluer une Node -currentNode- donnée (on commence par la source).
  *  Pour tous ses voisins : on prend un voisin -voisinNode-
  *         * on calcule une date d'arrivee correspondant a la distance entre currentNode et voisinNode + la date d'arrive a currentNode
- *         * la nouvelle date d'arrive pour voisinNode sera le min entre la date deja presente et celle qu'on vient de calculer
- *         * si voisinNode n'a pas encore étée évaluée on l'ajoute en fin de liste des nodes a evaluer
- *  
- *  # Point important #
- *  A tout moment de l'algorithme, on se trouve a une distance n de la source car on evalue ses voisins, 
- *  puis ses voisins de ses voisins... en augmentant toujours la distance de 1. Ainsi, notre algorithme est juste
- *  et on sait que une fois qu'une Node est evaluee
- *  
+ *         * si la nouvelle date est plus petite que celle stockee dans la Map<> :
+ *					* on remplace la date par celle calculee
+ *					* on indique dans la Map que cette date a ete calculee en venant de currentNode
+ *					* on ajoute voisinNode a la liste des Nodes a evaluer
+ * 
  *  */
 public class Dijkstra {
 	private Node source = null;
@@ -82,7 +79,9 @@ public class Dijkstra {
 		}	
 	}
 	
-	/** Fonction qui renvoie le plus court chemin permettant d'aller a une case donnée en @params destination */
+	/** Fonction qui renvoie le plus court chemin permettant d'aller a une case donnée en 
+	 * @params destination 
+	 */
 	public Path getShortestPath(Case destination) {
 		if (this.mapResultatsExecution == null)
 			throw new IllegalArgumentException("Must compute first");
