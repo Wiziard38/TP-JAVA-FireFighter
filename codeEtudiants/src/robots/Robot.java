@@ -73,17 +73,6 @@ public abstract class Robot {
 		this.quantiteEau = volume;
 	}
 
-	public double setEau(long volume) {
-		long EauRestante = this.getEauRestante();
-
-		if (EauRestante < volume) {
-			this.setEauRestante(0);
-			return EauRestante;
-		}
-		this.setEauRestante(EauRestante-volume);
-		return volume;
-	}
-
 	public void setVitesse(int vitesse) {
 		if (vitesse < 0) {
 			throw new IllegalArgumentException("Vitesse négative !");
