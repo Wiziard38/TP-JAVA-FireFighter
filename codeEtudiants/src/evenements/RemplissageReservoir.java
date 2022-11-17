@@ -1,8 +1,12 @@
-package io;
+package evenements;
+import io.Carte;
+import io.Case;
+import io.Direction;
+import io.NatureTerrain;
 import robots.Robot;
-
+import robots.RobotType;
 public class RemplissageReservoir extends Evenement {
-
+	/**RemplissageReservoir permet à un robot de se remplir d'une certaine quantité d'eau*/
 	private Robot robot;
 	private Carte carte;
 	private long EauRempli;
@@ -15,6 +19,7 @@ public class RemplissageReservoir extends Evenement {
 	}
 	
 	private boolean aCoteEau() {
+		/**aCoteEau renvoie true si le robot se trouve à côté d'une case de type eau*/
 		Case caseN = robot.getPosition();
 		Case caseS = robot.getPosition();
 		Case caseE = robot.getPosition();
@@ -39,8 +44,9 @@ public class RemplissageReservoir extends Evenement {
 	}
 	
 	private boolean peutSeRemplir() {
+		/**peutSeRemplir renvoie true si le robot peut se remplir*/
 		switch (this.robot.getType()) {
-		case "DRONE":
+		case DRONE:
 			return robot.getPosition().getNature() == NatureTerrain.EAU;
 		default:
 			return aCoteEau();
@@ -49,7 +55,6 @@ public class RemplissageReservoir extends Evenement {
 	@Override
 	public void execute() {
 		if (peutSeRemplir()){
-			System.out.println("Remplissage terminé!");
 			robot.setEauRestante(this.EauRempli);
 		}
 	}

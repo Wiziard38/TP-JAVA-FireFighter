@@ -1,5 +1,6 @@
 package io;
 import java.awt.Color;
+import robots.RobotType;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -8,6 +9,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import evenements.Evenement;
 
 import java.io.IOException;
 import java.io.File;
@@ -18,18 +21,89 @@ import gui.*;
 import robots.Robot;
 
 public class Simulateur implements Simulable{
+	/**Classe qui gère le simulateur*/
 	
-	private GUISimulator simu;	
+	private final GUISimulator guiSimu;	
+	private int tailleCasesSimu;
+	private DonneesSimulation jeuDeDonnees;
 	private int x = 0;
 	private int y = 0;
-	private int tailleCasesSimu;
 	private long dateSimulation = 0;
 	private ListEvenement listEvenement = new ListEvenement();
-	private DonneesSimulation jeuDeDonnees;
+	private ChefPompier chef;
+	
+	public Simulateur(GUISimulator gui) {
+		this.guiSimu = gui;
+		gui.setSimulable(this);
+	}
+	
+	public void start() {
+		/**On dessine la carte et on commence la simulation en demandant au chef pompier d'assigner
+		 * les tâches*/
+		draw(jeuDeDonnees);
+	}
+	
+	public void chooseMap(int mapIndex) {
+		/**chooseMap permet de chosir une des cartes de simulation plus simplement pour les tests:
+		 * 0 = carteSUjet
+		 * 1 = desertOfDeath
+		 * 2 = mushroomOfHell
+		 * 3 = spiralOfMadness*/
+		if (!((1 <= mapIndex) && (mapIndex <= 4))) {
+			throw new IllegalArgumentException("Le numero de carte doit etre cmpris entre 1 et 4");
+		}
+		
+		DonneesSimulation jeuDeDonnees = null;
+		try {
+			switch (mapIndex) {
+			case 1:
+				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/carteSujet.map");
+				break;
+			case 2:
+				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
+				break;
+			case 3:
+				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/mushroomOfHell-20x20.map");
+				break;
+			case 4:
+				jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
+				break;
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (DataFormatException e) {
+			e.printStackTrace();
+		}
+		this.jeuDeDonnees = jeuDeDonnees;
+		this.tailleCasesSimu = Math.min(this.guiSimu.getPanelHeight(),
+				this.guiSimu.getPanelWidth())/Math.max(jeuDeDonnees.getCarte().getNbColonnes(),
+				jeuDeDonnees.getCarte().getNbLignes());
+		draw(jeuDeDonnees);
+		
+	}
+	
+	public void chooseChef(int chefIndex) {
+		/**chooseChef permet de défnir quel chef pompier sera utilisé, donc la stratégie d'affectation
+		 * des feux*/
+		if (!((1 <= chefIndex) && (chefIndex <= 2))) {
+			throw new IllegalArgumentException("Le numero de chef doit etre cmpris entre 1 et 2");
+		}
+		
+		switch (chefIndex) {
+		case 1:
+			this.chef = new ChefPompier(this);
+			break;
+		case 2:
+			// TODO ajouter deuxieme chef
+			// this.chef = new ... (this);
+			break;
+		}
+	}
 	
 	public DonneesSimulation getJeuDeDonnees() {
 		return this.jeuDeDonnees;
 	}
+	
 	public void ajouteEvenement(Evenement e) {
 		this.listEvenement.ajouteEvenement(e);
 	}
@@ -39,7 +113,7 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void incrementeDate() {
-		this.dateSimulation += 1;
+		this.dateSimulation += 40;
 	}
 	
 	public long getDateSimulation() {
@@ -49,56 +123,60 @@ public class Simulateur implements Simulable{
 	public boolean simulationTerminee() {
 		return true;
 	}
-	
-	public Simulateur(GUISimulator gui) {
-		this.simu = gui;
-		gui.setSimulable(this);
-	
-		DonneesSimulation jeuDeDonnees;
-		try {
-			jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/carteSujet.map");
-			//jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/desertOfDeath-20x20.map");
-			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/mushroomOfHell-20x20.map");
-			// jeuDeDonnees = LecteurDonnees.lire("codeEtudiants/cartes/spiralOfMadness-50x50.map");
-			this.jeuDeDonnees = jeuDeDonnees;
-			this.tailleCasesSimu = Math.min(this.simu.getPanelHeight(),
-					this.simu.getPanelWidth())/Math.max(jeuDeDonnees.getCarte().getNbColonnes(),
-					jeuDeDonnees.getCarte().getNbLignes());
-			draw(jeuDeDonnees);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (DataFormatException e) {
-			e.printStackTrace();
-		}
 		
+	public ChefPompier getChefPompier() {
+		return this.chef;
 	}
 
 	public void next() {
+		/**next éxecute les prochains événement dans la liste des événements
+		 * dont la date est inférieur à la date actuel du simulateur*/
 		incrementeDate();
-		boolean flag;
-		if (this.listEvenement.getPremier() != null) {
-			flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation;
-			while (flag) {
-				this.listEvenement.getPremier().execute();
-				this.listEvenement.suppPremier();
-				System.out.println(this.listEvenement.getPremier());
-				if (this.listEvenement.getPremier() != null) {
-					flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation; 
-				}
-				else {
-					flag = false;
-				}
-			}
+		
+		if (!this.chef.getSimulationOver()) {
+			this.chef.assigneIncendie();
+		}
+		
+		while (this.listEvenement.getPremier() != null && this.listEvenement.getPremier().getDate() <= this.dateSimulation) {
+			
+			this.listEvenement.getPremier().execute();
+			this.listEvenement.suppPremier();
+				
 		}
 		draw(this.jeuDeDonnees);
+		
 	}
 	
+	
 	public void restart() {
-		return;
+		this.dateSimulation = 0;
+		/**permet de restart la simulation pour la revoir*/
+		for (Robot robot : this.jeuDeDonnees.getRobots()) {
+			robot.RestartPosition();
+			robot.setOccupied(false);
+		}
+		for (Incendie incendie : this.jeuDeDonnees.getIncendies()) {
+			incendie.EauNecessaireRestart();
+			incendie.setTraite(Traitement.rien);
+		}
+		
+		//drawRobot(this.jeuDeDonnees.getRobots()[0]);
+
+		
+//		if (this.chef.getClass().getTypeName() == "ChefPompier") {
+		this.chooseChef(1);
+//		}
+		
+		System.out.println("Remise a zero de la simulation");
+				
+		draw(this.jeuDeDonnees);
+		
+		//this.chef.start();
 	}
 
 	private void draw(DonneesSimulation jeuDeDonnes) {
-		simu.reset();
+		/**Fonction qui dessine la carte entière, les incendies et les robots à leur position initial*/
+		guiSimu.reset();
 		this.x = 0;
 		this.y = 0;
 		Carte carte = jeuDeDonnes.getCarte();
@@ -120,7 +198,7 @@ public class Simulateur implements Simulable{
 					drawHabitat();
 					break;
 				case TERRAIN_LIBRE:
-					drawTerrainLibre();
+ 					drawTerrainLibre();
 					break;
 				default:
 					break;
@@ -134,36 +212,37 @@ public class Simulateur implements Simulable{
 			drawRobot(robots[i]);
 		}
 	}
-
+	/*Les fonctions d'après permette chacune de dessiner un élément de la carte, un robot,
+	 *  un incendie ou une carte*/
 	private void drawRobot(Robot robot) {
 		switch (robot.getType()) {
-		case "DRONE":
+		case DRONE:
 			ImageElement imageDrone = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_drone.png",(int)Math.round(this.tailleCasesSimu*0.7),
-					(int)Math.round(this.tailleCasesSimu*0.7),this.simu);
-	        this.simu.addGraphicalElement(imageDrone);
+					(int)Math.round(this.tailleCasesSimu*0.7),this.guiSimu);
+	        this.guiSimu.addGraphicalElement(imageDrone);
 	        break;
-		case "CHENILLES":
+		case CHENILLES:
 			ImageElement imageChenille = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_chenilles.png",(int)Math.round(this.tailleCasesSimu*0.7),
-					(int)Math.round(this.tailleCasesSimu*0.7),this.simu);
-	        this.simu.addGraphicalElement(imageChenille);
+					(int)Math.round(this.tailleCasesSimu*0.7),this.guiSimu);
+	        this.guiSimu.addGraphicalElement(imageChenille);
 	        break;
-		case "PATTES":
+		case PATTES:
 			ImageElement imagePattes = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_pattes.png",(int)Math.round(this.tailleCasesSimu*0.7),
-					(int)Math.round(this.tailleCasesSimu*0.7),this.simu);
-	        this.simu.addGraphicalElement(imagePattes);
+					(int)Math.round(this.tailleCasesSimu*0.7),this.guiSimu);
+	        this.guiSimu.addGraphicalElement(imagePattes);
 	        break;
-		case "ROUES":
+		case ROUES:
 			ImageElement image = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_roues.png",(int)Math.round(this.tailleCasesSimu*0.7),
-					(int)Math.round(this.tailleCasesSimu*0.7),this.simu);
-	        this.simu.addGraphicalElement(image);
+					(int)Math.round(this.tailleCasesSimu*0.7),this.guiSimu);
+	        this.guiSimu.addGraphicalElement(image);
 	        break;
 		}		
 	}
@@ -173,16 +252,16 @@ public class Simulateur implements Simulable{
 			ImageElement image = new ImageElement((int)Math.round(incendie.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(incendie.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"incendie.png",(int)Math.round(this.tailleCasesSimu*0.8),
-					(int)Math.round(this.tailleCasesSimu*0.8),this.simu);
-	        this.simu.addGraphicalElement(image);
+					(int)Math.round(this.tailleCasesSimu*0.8),this.guiSimu);
+	        this.guiSimu.addGraphicalElement(image);
 		}
 	}
 	
 	private void drawEau() {
 		
-        ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_eau.jpg",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
-        this.simu.addGraphicalElement(image);
-        if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
+        ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_eau.jpg",this.tailleCasesSimu,this.tailleCasesSimu,this.guiSimu);
+        this.guiSimu.addGraphicalElement(image);
+        if (x<Math.min(this.guiSimu.getPanelHeight(), this.guiSimu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
 		}
 		else {
@@ -192,9 +271,9 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawForet() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_foret.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
-        this.simu.addGraphicalElement(image);
-        if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_foret.png",this.tailleCasesSimu,this.tailleCasesSimu,this.guiSimu);
+        this.guiSimu.addGraphicalElement(image);
+        if (x<Math.min(this.guiSimu.getPanelHeight(), this.guiSimu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
 		}
 		else {
@@ -204,9 +283,9 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawHabitat() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_habitat.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
-        this.simu.addGraphicalElement(image);
-        if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_habitat.png",this.tailleCasesSimu,this.tailleCasesSimu,this.guiSimu);
+        this.guiSimu.addGraphicalElement(image);
+        if (x<Math.min(this.guiSimu.getPanelHeight(), this.guiSimu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
 		}
 		else {
@@ -216,9 +295,9 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawRoche() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_rocher.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
-        this.simu.addGraphicalElement(image);
-        if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_rocher.png",this.tailleCasesSimu,this.tailleCasesSimu,this.guiSimu);
+        this.guiSimu.addGraphicalElement(image);
+        if (x<Math.min(this.guiSimu.getPanelHeight(), this.guiSimu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
 		}
 		else {
@@ -228,9 +307,9 @@ public class Simulateur implements Simulable{
 	}
 	
 	private void drawTerrainLibre() {
-		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_terrain_libre.png",this.tailleCasesSimu,this.tailleCasesSimu,this.simu);
-        this.simu.addGraphicalElement(image);
-        if (x<Math.min(this.simu.getPanelHeight(), this.simu.getPanelWidth())-this.tailleCasesSimu) {
+		ImageElement image = new ImageElement(x,y,System.getProperty("user.dir")+"/codeEtudiants/image/"+"case_terrain_libre.png",this.tailleCasesSimu,this.tailleCasesSimu,this.guiSimu);
+        this.guiSimu.addGraphicalElement(image);
+        if (x<Math.min(this.guiSimu.getPanelHeight(), this.guiSimu.getPanelWidth())-this.tailleCasesSimu) {
 			x += this.tailleCasesSimu;
 		}
 		else {

@@ -7,6 +7,9 @@ import java.util.List;
 public class Path {
 	private List<Node> listNodes = new ArrayList<Node>();
 	
+	public Path() {
+	}
+
 	public Path(Node firstNode) {
 		this.addNode(firstNode);
 	}
@@ -19,7 +22,7 @@ public class Path {
 		return this.listNodes;
 	}
 	
-	public double getPathLenght() {
+	public double getPathLength() {
 		double length = 0;
 		Node first = listNodes.get(0);
 		
@@ -28,5 +31,15 @@ public class Path {
 			length += first.distanceTo(second);
 		}
 		return length;
+	}
+
+	@Override
+	public Path clone() {
+		Path newPath = new Path();
+		for (Node node : this.getPath()) {
+			newPath.addNode(node);
+		}
+		
+		return newPath;
 	}
 }

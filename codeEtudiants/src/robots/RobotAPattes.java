@@ -3,12 +3,12 @@ package robots;
 import io.Case;
 import io.Carte;
 import io.NatureTerrain;
-import io.Simulateur;
+
 
 public class RobotAPattes extends RobotTerrestre {
-	
+	/**RobotAPattes est un type particulier de robot*/
 	public RobotAPattes(Case position, Carte carte) {
-		super(position, 30, Long.MAX_VALUE, "PATTES", carte);
+		super(position, 30, Long.MAX_VALUE, RobotType.PATTES, carte);
 	}
 
 

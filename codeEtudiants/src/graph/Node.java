@@ -28,5 +28,10 @@ public class Node{
 	public Map<Node, Double> getVoisins() {
 		return this.adjacentNodes;
 	}
+	
+	@Override
+	public String toString() {
+		return this.getCase().toString();
+	}
 
 }

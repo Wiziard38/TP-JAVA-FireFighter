@@ -1,21 +1,34 @@
 package io;
+import robots.Robot;
 
 public class Incendie {
-	private Case position;
+	/**Incendie implemente les incendies des cartes*/
+	private final Case position;
 	private long eauNecessaire;
-	private boolean traite;
+	private final long eauNecessaireRestart;
+	private Traitement traite;
+	private Robot robotQuiTraite;
 	
 	public Incendie(Case pos, long eau) {
 		this.eauNecessaire = eau;
+		this.eauNecessaireRestart = this.eauNecessaire;
 		this.position = pos;
-		this.traite = false;
+		this.traite = Traitement.rien;
+		this.robotQuiTraite = null;
 	}
 	
-	public boolean getTraite() {
-		return this.traite;
+	public Robot getRobotQuiTraite() {
+		return this.robotQuiTraite;
 	}
 	
-	public void setTraite(boolean val) {
+	public void setRobotQuiTraite(Robot robot) {
+		this.robotQuiTraite = robot;
+	}
+	
+	public Traitement getTraite() {
+		return this.traite ;
+	}
+	public void setTraite(Traitement val) {
 		this.traite = val;
 	}
 	
@@ -27,11 +40,15 @@ public class Incendie {
 		return this.eauNecessaire;
 	}
 	
-	public void setPosition(Case newPos) {
-		this.position = newPos;
-	}
+//	public void setPosition(Case newPos) {
+//		this.position = newPos;
+//	}
 	
 	public void setEauNecessaire(long newQuant) {
 		this.eauNecessaire = newQuant;
+	}
+	
+	public void EauNecessaireRestart() {
+		this.setEauNecessaire(this.eauNecessaireRestart);
 	}
 }

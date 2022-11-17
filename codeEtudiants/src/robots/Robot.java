@@ -1,35 +1,34 @@
 package robots;
 
 import io.*;
+import graph.*;
 
-import org.graphstream.algorithm.Dijkstra;
-import org.graphstream.algorithm.Dijkstra.Element;
-import org.graphstream.graph.Graph;
-import org.graphstream.graph.Edge;
-import org.graphstream.graph.Node;
-import org.graphstream.graph.Path;
-import org.graphstream.graph.implementations.SingleGraph;
-import io.VerserEau;
-import io.RemplissageReservoir;
-import io.Fini;
-import io.TypeEvent;
+import java.util.List;
+
+import evenements.Deplacement;
+import evenements.RemplissageReservoir;
+import evenements.VerserEau;
+
 
 public abstract class Robot {
+	/**Classe mère de tous les différents types de robot, elle rassemble tout ce qui est 
+	 * commun à un robot*/
+	private final Case positionRestart;
 	private Case position;
 	private int vitesse;
-	private String type;
+	private final RobotType type;
 	private final long tailleReservoir;
 	private long quantiteEau = 0;
 	private boolean occupied;
-	private Graph mapGraph;
-	private TypeEvent dernierEventType = TypeEvent.Debut;
+	private final Graph mapGraph = new Graph("my graph");
 	
-	public Robot(Case init_position, int vitesse, long tailleReservoir, String type, Carte carte) {
+	public Robot(Case init_position, int vitesse, long tailleReservoir, RobotType type, Carte carte) {
 		if (vitesse < 0) {
 			throw new IllegalArgumentException("La vitesse doit etre positive !");
 		}
 
 		this.position = init_position;
+		this.positionRestart = this.position;
 		this.vitesse = vitesse;
 		this.tailleReservoir = tailleReservoir;
 		this.type = type;
@@ -37,22 +36,14 @@ public abstract class Robot {
 		this.setEauRestante(tailleReservoir);
 		
 		this.occupied = false;
-		this.initGraph(carte);
-	}
-	
-	public TypeEvent getDernierEventType() {
-		return this.dernierEventType;
-	}
-	
-	public void setDernierEventType(TypeEvent s) {
-		this.dernierEventType = s;
+		this.initGraph(carte, mapGraph);
 	}
 	
 	public long getTailleReservoir() {
 		return this.tailleReservoir;
 	}
 	
-	public String getType(){
+	public RobotType getType(){
 		return this.type;
 	}
 	
@@ -114,8 +105,11 @@ public abstract class Robot {
 		this.occupied = state;
 	}
 	
-	private void initGraph(Carte carte) {
-		Graph graph = new SingleGraph("graph");
+	private void initGraph(Carte carte, Graph mapGraph) {
+		/**Fonction qui initialise le graph du robot. Le graph est composé des cases où il peut se rendre
+		 * comme noeuds et les noeuds sont reliés par une branche si le robot peut passer de l'une à 
+		 * l'autre. Chacune des branches possède un poid correspondant au temps pour passer d'une case
+		 * à l'autre*/
 		int nbLignes = carte.getNbLignes();
 		int nbColonnes = carte.getNbColonnes();
 		int cellSize = carte.getTailleCase();
@@ -124,45 +118,33 @@ public abstract class Robot {
 			for (int index_lin = 0; index_lin < nbLignes; index_lin++) {
 				
 				if (this.peutDeplacer(carte.getCase(index_lin, index_col).getNature())) {
-					String cellName = String.format("%x %x", index_lin, index_col);
-					graph.addNode(cellName).setAttribute("xy", index_lin, index_col);
+					Node current = new Node(carte.getCase(index_lin, index_col));
+					mapGraph.addNode(current);
 					
 					if (index_lin != 0) {
 						if (this.peutDeplacer(carte.getCase(index_lin - 1, index_col).getNature())) {
-							double time = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin - 1, index_col), cellSize);
-							String cellNorthName = String.format("%x %x", index_lin - 1, index_col);
-							Edge e = graph.addEdge(cellName + " - " + cellNorthName, cellName, cellNorthName);
-							e.setAttribute("time", time);
-							e.setAttribute("Node1", index_lin, index_col);
-							e.setAttribute("Node2", index_lin - 1, index_col);
+							double timeNord = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin - 1, index_col), cellSize);
+							
+							Node voisinNord = mapGraph.getNodeFromCase(carte.getCase(index_lin - 1, index_col));
+							mapGraph.addEdge(voisinNord, current, timeNord);
 						}
 					}
 					
 					if (index_col != 0) {
 						if (this.peutDeplacer(carte.getCase(index_lin, index_col - 1).getNature())) {
-							double time = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin, index_col - 1), cellSize);
-							String cellWestName = String.format("%x %x", index_lin, index_col - 1);
-							Edge e = graph.addEdge(cellName + " - " + cellWestName, cellName, cellWestName);
-							e.setAttribute("time", time);
-							e.setAttribute("Node1", index_lin, index_col);
-							e.setAttribute("Node2", index_lin, index_col - 1);
+							double timeOuest = calculateMeanSpeed(this, carte.getCase(index_lin, index_col), carte.getCase(index_lin, index_col - 1), cellSize);
+							
+							Node voisinOuest = mapGraph.getNodeFromCase(carte.getCase(index_lin, index_col - 1));
+							mapGraph.addEdge(voisinOuest, current, timeOuest);
 						}
 					}
 				}
 			}
 		}
-		
-		for (Node n:graph.getEachNode()) {
-			n.setAttribute("label", String.format("(%x;%x)", n.getAttribute("xy")));
-		}
-		for (Edge e:graph.getEachEdge()) {
-			e.setAttribute("label", "" + (double) e.getNumber("time"));
-		}
-	
-		this.mapGraph = graph;
 	}
 	
 	private double calculateMeanSpeed(Robot robot, Case firstCell, Case secondCell, int cellSize) {
+		/**Calcule la vitesse du robot en fonction du terrain*/
 		int v1 = robot.getVitesse(firstCell.getNature());
 		int v2 = robot.getVitesse(secondCell.getNature());
 		return (double) (2 * cellSize / (v1 + v2));
@@ -172,74 +154,82 @@ public abstract class Robot {
 		return this.mapGraph;
 	}
 
+	public void RestartPosition() {
+		this.setPosition(this.positionRestart);
+	}
 	
 
-	public Path getShortestPath(Case position, Case objective) {
+	public Path getShortestPath(Case position, Case destination) {
+		/**Calcule le plus court chemin de la case position à la case destination est reoturne ce
+		 * chemin*/
 		Graph graph = this.getGraph();
-		Node start = graph.getNode(String.format("%x %x", position.getLigne(), position.getColonne()));
-		Node end = graph.getNode(String.format("%x %x", objective.getLigne(), objective.getColonne()));
 		
-		Dijkstra dijkstra = new Dijkstra(Element.EDGE, "result", "time");
+		Dijkstra dijkstra = new Dijkstra();
 		dijkstra.init(graph);
-		dijkstra.setSource(start);
+		dijkstra.setSource(position);
 		dijkstra.compute();
-		if (end == null) {
-			return null;
-		}
-		if (dijkstra.getPathLength(end) == Double.POSITIVE_INFINITY) { // Disconnected nodes
-			return null;
-		}
-		if (!peutDeplacer(objective.getNature())) { // Impossible objective
+
+		if (!peutDeplacer(destination.getNature())) { // Impossible objective
 			return null;
 		}
 
-		return dijkstra.getPath(end);
+		if (dijkstra.getShortestTime(destination) == Long.MAX_VALUE) { // Disconnected nodes
+			return null;
+		}
+
+		return dijkstra.getShortestPath(destination);
 	}
 	
 	public boolean existsPathTo(Case objective) {
+		/**existsPathTo regarde si le robot peut se rendre sur la case objective et renvoie true s'il
+		 * peut false sinon*/
 		return (getShortestPath(this.getPosition(), objective) != null);
 	}
 
 	public double getTimeFromPath(Path path) {
+		/**getTimeFromPath caclule le temps que le robot mettera pour faire le chemin path*/
 		if (path == null) {
-			return Double.POSITIVE_INFINITY; 
+			return Long.MAX_VALUE; 
 		}
-		return path.getPathWeight("time");
+		return path.getPathLength();
 	}
 	
 	public long goTo(Case objective, Simulateur simulateur, long dateDebut) {
+		/**goTo calcule le chemin le plus court pour que ce robot se déplace sur la case objective
+		 * et créer la sutie d'événement nécessaire pour s'y rendre */
 		Path path = this.getShortestPath(this.getPosition(), objective);
 		return execPath(path, this.getPosition(), simulateur, dateDebut);
 	}
 	
-	private long execPath(Path shortestPath, Case currentPos, Simulateur simulateur, long dateDebut) {
-		Case current_pos = currentPos;
+	private long execPath(Path shortestPath, Case currentPosition, Simulateur simulateur, long dateDebut) {
+		/**execPath gènere la suite d'événement nécessaire pour faire le chemin path depuis la case
+		 * currentPosition*/
+		Node currentNode = this.mapGraph.getNodeFromCase(currentPosition) ;
 		long current_date = dateDebut;
 		
-		for (Edge edge : shortestPath.getEachEdge()) {
+		List<Node> listNodes = shortestPath.getPath();
+
+		if (!listNodes.get(0).equals(currentNode)) {
+			throw new IllegalArgumentException("Path not beginning from actual position");
+		}
+		listNodes.remove(0);
+		
+		for (Node nextNode : listNodes) {
 			Direction dir;
-			Object[] array1 = edge.getAttribute("Node1");
-			Object[] array2 = edge.getAttribute("Node2");
-			Case case1 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array1[0], (int)array1[1]);
-			Case case2 = simulateur.getJeuDeDonnees().getCarte().getCase((int)array2[0], (int)array2[1]);
-			if (case1.equals(current_pos)) {
-				dir = simulateur.getJeuDeDonnees().getCarte().getDirection(case1, case2);
-				current_pos = case2;
-			} else {
-				dir = simulateur.getJeuDeDonnees().getCarte().getDirection(case2, case1);
-				current_pos = case1;
-			}
-						
-			double time = (double) edge.getAttribute("time");
-			current_date += (long) time;
+			
+			dir = simulateur.getJeuDeDonnees().getCarte().getDirection(currentNode.getCase(), nextNode.getCase());			
+			current_date += nextNode.distanceTo(currentNode);
 			
 			simulateur.ajouteEvenement(new Deplacement(this, simulateur.getJeuDeDonnees().getCarte(), dir, current_date));
+
+			currentNode = nextNode;
 		}
 		return current_date;
 	}
 
 	public long deverserEau(Incendie incendie, long eauAVerser, Simulateur simulateur, long dateDebut) {
-
+		/**deverserEau gènere une événement de déverssement d'eau sur incendie d'une quantité d'eau
+		 * de volume eauAVerser*/
 		long dateFin = dateDebut;
 		dateFin += (eauAVerser % this.getQuantiteVersementUnitaire() == 0) ? (eauAVerser/this.getQuantiteVersementUnitaire()) * this.getTempsVersementUnitaire() : (eauAVerser / this.getQuantiteVersementUnitaire() + 1) * this.getTempsVersementUnitaire();
 
@@ -249,6 +239,8 @@ public abstract class Robot {
 	}
 	
 	public long rechargerEau(Simulateur simu, long dateDebut, Case currentPos, Case waterPos) {
+		/**recharcherEau gènere des événements de déplacement jusqu'à une case où ce robot peut 
+		 * se rechercher et un événement de rechargement d'eau de ce robot sur une case waterPos*/
 		long currentDate = dateDebut;
 		
 		// Aller a l'eau
@@ -266,7 +258,9 @@ public abstract class Robot {
 	}
 	
 	public void traiteIncendie(Simulateur simulateur, Incendie incendie) {
+		/**traite incendie gènere la suite d'événements nécessaire pour que ce robot éteigne incendie*/
 		this.setOccupied(true);
+		incendie.setRobotQuiTraite(this);
 		long currentDate = simulateur.getDateSimulation();
 		long eauIncendie = incendie.getEauNecessaire();
 		long eauReservoir = this.getEauRestante();
@@ -298,10 +292,11 @@ public abstract class Robot {
 				}
 			}
 		}
-		simulateur.ajouteEvenement(new Fini(this, currentDate));
+		simulateur.ajouteEvenement(new Fini(this, incendie, currentDate+1));
 	}
 
 	public long getVraieEauVersee(long eauSouhaitee) {
+		/**????*/
 		long eauReelle;
 		long versementUnitaire = this.getQuantiteVersementUnitaire();
 		if (eauSouhaitee % versementUnitaire == 0) {
