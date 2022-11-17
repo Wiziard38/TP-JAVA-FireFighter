@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DonneesSimulation {
+	/**DonneesSimulation regroupe toutes les informations nécessaires pour la simulation:
+	 * la carte, les incendies, les robots, les cases de type eau et leurs cases voisines*/
 	private Carte carte;
 	private Incendie[] incendies;
 	private Robot[] robots;
@@ -54,6 +56,7 @@ public class DonneesSimulation {
 	}
 	
 	public void initCasesEaux() {
+		/*initCasesEaux ajotue toutes les cases de type eau dans this.listEaux*/
 		for (int index_lin = 0; index_lin < carte.getNbColonnes(); index_lin++) {
 			for (int index_col = 0; index_col < carte.getNbColonnes(); index_col++) {
 				if (carte.getCase(index_lin, index_col).getNature() == NatureTerrain.EAU) {
@@ -64,6 +67,7 @@ public class DonneesSimulation {
 	}
 	
 	public void initCasesVoisins() {
+		/*initCasesVoisins ajoute toutes les cases voisines aux cases eaux dans this.listVoisins*/
 		for (Case waterTile : this.getCasesEaux()) {
 			for (Direction dir : Direction.values()) {
 				if (carte.voisinExiste(waterTile, dir) && carte.getVoisin(waterTile, dir).getNature() != NatureTerrain.EAU) {

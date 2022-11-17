@@ -2,6 +2,7 @@ package io;
 import robots.Robot;
 
 public class Incendie {
+	/**Incendie implemente les incendies des cartes*/
 	private final Case position;
 	private long eauNecessaire;
 	private final long eauNecessaireRestart;

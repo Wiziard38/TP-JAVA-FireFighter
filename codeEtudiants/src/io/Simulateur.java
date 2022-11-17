@@ -1,5 +1,6 @@
 package io;
 import java.awt.Color;
+import robots.RobotType;
 import java.awt.Frame;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -20,6 +21,7 @@ import gui.*;
 import robots.Robot;
 
 public class Simulateur implements Simulable{
+	/**Classe qui gère le simulateur*/
 	
 	private final GUISimulator guiSimu;	
 	private int tailleCasesSimu;
@@ -36,11 +38,18 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void start() {
+		/**On dessine la carte et on commence la simulation en demandant au chef pompier d'assigner
+		 * les tâches*/
 		draw(jeuDeDonnees);
 		this.chef.start();
 	}
 	
 	public void chooseMap(int mapIndex) {
+		/**chooseMap permet de chosir une des cartes de simulation plus simplement pour les tests:
+		 * 0 = carteSUjet
+		 * 1 = desertOfDeath
+		 * 2 = mushroomOfHell
+		 * 3 = spiralOfMadness*/
 		if (!((0 <= mapIndex) && (mapIndex <= 3))) {
 			throw new IllegalArgumentException("Le numero de carte doit etre cmpris entre 1 et 3");
 		}
@@ -75,6 +84,8 @@ public class Simulateur implements Simulable{
 	}
 	
 	public void chooseChef(int chefIndex) {
+		/**chooseChef permet de défnir quel chef pompier sera utilisé, donc la stratégie d'affectation
+		 * des feux*/
 		if (!((0 <= chefIndex) && (chefIndex <= 1))) {
 			throw new IllegalArgumentException("Le numero de carte doit etre cmpris entre 1 et 3");
 		}
@@ -119,6 +130,8 @@ public class Simulateur implements Simulable{
 	}
 
 	public void next() {
+		/**next éxecute les prochains événement dans la liste des événements
+		 * dont la date est inférieur à la date actuel du simulateur*/
 		incrementeDate();
 		boolean flag;
 		if (this.listEvenement.getPremier() != null) {
@@ -139,6 +152,7 @@ public class Simulateur implements Simulable{
 	
 	
 	public void restart() {
+		/**permet de restart la simulation pour la revoir*/
 		for (Robot robot : this.jeuDeDonnees.getRobots()) {
 			robot.RestartPosition();
 			robot.setOccupied(false);
@@ -147,18 +161,20 @@ public class Simulateur implements Simulable{
 			incendie.EauNecessaireRestart();
 			incendie.setTraite(Traitement.rien);
 		}
-		System.out.println("done");
 		
-		if (this.chef.getClass().getTypeName() == "ChefPompier") {
+//		if (this.chef.getClass().getTypeName() == "ChefPompier") {
 			this.chooseChef(0);
-		}
+//		}
 		
 		System.out.println("done");
-		
+		System.out.println(this.jeuDeDonnees.getIncendies()[0].getEauNecessaire());
+		System.out.println(this.jeuDeDonnees.getRobots()[0].getPosition());
+		draw(this.jeuDeDonnees);
 		this.chef.start();
 	}
 
 	private void draw(DonneesSimulation jeuDeDonnes) {
+		/**Fonction qui dessine la carte entière, les incendies et les robots à leur position initial*/
 		guiSimu.reset();
 		this.x = 0;
 		this.y = 0;
@@ -181,7 +197,7 @@ public class Simulateur implements Simulable{
 					drawHabitat();
 					break;
 				case TERRAIN_LIBRE:
-					drawTerrainLibre();
+ 					drawTerrainLibre();
 					break;
 				default:
 					break;
@@ -195,31 +211,32 @@ public class Simulateur implements Simulable{
 			drawRobot(robots[i]);
 		}
 	}
-
+	/*Les fonctions d'après permette chacune de dessiner un élément de la carte, un robot,
+	 *  un incendie ou une carte*/
 	private void drawRobot(Robot robot) {
 		switch (robot.getType()) {
-		case "DRONE":
+		case DRONE:
 			ImageElement imageDrone = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_drone.png",(int)Math.round(this.tailleCasesSimu*0.7),
 					(int)Math.round(this.tailleCasesSimu*0.7),this.guiSimu);
 	        this.guiSimu.addGraphicalElement(imageDrone);
 	        break;
-		case "CHENILLES":
+		case CHENILLES:
 			ImageElement imageChenille = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_chenilles.png",(int)Math.round(this.tailleCasesSimu*0.7),
 					(int)Math.round(this.tailleCasesSimu*0.7),this.guiSimu);
 	        this.guiSimu.addGraphicalElement(imageChenille);
 	        break;
-		case "PATTES":
+		case PATTES:
 			ImageElement imagePattes = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_pattes.png",(int)Math.round(this.tailleCasesSimu*0.7),
 					(int)Math.round(this.tailleCasesSimu*0.7),this.guiSimu);
 	        this.guiSimu.addGraphicalElement(imagePattes);
 	        break;
-		case "ROUES":
+		case ROUES:
 			ImageElement image = new ImageElement((int)Math.round(robot.getPosition().getColonne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					(int)Math.round(robot.getPosition().getLigne()*this.tailleCasesSimu+this.tailleCasesSimu*0.15),
 					System.getProperty("user.dir")+"/codeEtudiants/image/"+"robot_roues.png",(int)Math.round(this.tailleCasesSimu*0.7),

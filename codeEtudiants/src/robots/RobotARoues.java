@@ -6,9 +6,9 @@ import io.NatureTerrain;
 
 
 public class RobotARoues extends RobotTerrestre {
-	
+	/**RobotARoues est un type particulier de robot*/
 	public RobotARoues(Case position, Carte carte, int vitesse) {
-		super(position, vitesse, 5000, "ROUES", carte);
+		super(position, vitesse, 5000, RobotType.ROUES, carte);
 	}
 
 

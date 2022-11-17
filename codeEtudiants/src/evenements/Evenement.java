@@ -1,6 +1,7 @@
 package evenements;
 
 public abstract class Evenement {
+	/**Classe d'un événement qui regroupe ce qui est commun à nimporte quelle événement */
 	private long date;
 	private Evenement suivant = null;
 	
