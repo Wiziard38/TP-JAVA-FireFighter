@@ -1,24 +1,10 @@
 package io;
-import java.awt.Color;
-import robots.RobotType;
-import java.awt.Frame;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
 import evenements.Evenement;
-
-import java.io.IOException;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
-
 import gui.*;
 import robots.Robot;
+import evenements.Evenement;
 
 public class Simulateur implements Simulable{
 	/**Classe qui gère le simulateur*/
@@ -91,11 +77,10 @@ public class Simulateur implements Simulable{
 		
 		switch (chefIndex) {
 		case 1:
-			this.chef = new ChefPompier(this);
+			this.chef = new ChefPompierSimple(this);
 			break;
 		case 2:
-			// TODO ajouter deuxieme chef
-			// this.chef = new ... (this);
+			this.chef = new ChefPompierMaster(this);
 			break;
 		}
 	}
@@ -159,13 +144,13 @@ public class Simulateur implements Simulable{
 			incendie.EauNecessaireRestart();
 			incendie.setTraite(Traitement.rien);
 		}
-		
-		//drawRobot(this.jeuDeDonnees.getRobots()[0]);
 
 		
-//		if (this.chef.getClass().getTypeName() == "ChefPompier") {
-		this.chooseChef(1);
-//		}
+		if (this.chef.getType() == TypeChefPompier.Simple) {
+			this.chooseChef(1);
+		} else {
+			this.chooseChef(2);
+		}
 		
 		System.out.println("Remise a zero de la simulation");
 				

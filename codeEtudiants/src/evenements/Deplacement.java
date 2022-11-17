@@ -5,8 +5,9 @@ import io.Case;
 import io.Direction;
 import robots.Robot;
 
+/**Deplacement est un événement qui permet de faire bouger un robot dans une direction*/
 public class Deplacement extends Evenement {
-	/**Deplacement est un événement qui permet de faire bouger un robot dans une direction*/
+	
 	private Robot robot;
 	private Direction dir;
 	private Carte carte;

@@ -1,22 +1,25 @@
 package io;
 import robots.Robot;
-<<<<<<< HEAD
 
 public abstract class ChefPompier {
-=======
-import java.lang.Thread;
-public class ChefPompier {
-	/**ChefPompier implemente un chef pompier basique qui gère les robots de la manière suivante:
-	 * Il donne le premier feu non eteind au premier robot qu'il trouve pas occupé*/
->>>>>>> c7c6225a89c3e4f21b18ba7ea3ce5b4114bcee7d
+	/**ChefPompier implemente un un chef pompier générale sans stratégie, elle est a définir dans des classes filles*/
 	private Simulateur simu;
 	private boolean simulationOver;
+	private final TypeChefPompier type;
 	
-	public ChefPompier(Simulateur simu) {
+	public ChefPompier(Simulateur simu, TypeChefPompier type) {
 		this.simu = simu;
 		this.simulationOver = false;
+		this.type = type;
 	}
 	
+	public TypeChefPompier getType() {
+		return this.type;
+	}
+	
+	public Simulateur getSimu() {
+		return this.simu;
+	}
 	private boolean feuTousEteind() {
 		/**feuTousEteind qui nous permet de savoir si tous les feux de la carte sont éteinds */
 		for(Incendie incendie: simu.getJeuDeDonnees().getIncendies()) {
@@ -35,17 +38,6 @@ public class ChefPompier {
 			if (incendie.getEauNecessaire() != 0 && incendie.getTraite() == Traitement.rien) {
 				incendie.setTraite(Traitement.traite);
 				return incendie;
-			}
-		}
-		return null;
-	}
-	
-	private Robot getRobotPret(Case caseIncendie) {
-		/**getRobotPret nous permet de savoir si il reste un robot n'est pas occupé. Cette fonction
-		 * nous renvoie un robot s'il en existe un et null sinon */
-		for (Robot robot : simu.getJeuDeDonnees().getRobots()) {
-			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie) || robot.getPosition().equal(caseIncendie))) {
-				return robot;
 			}
 		}
 		return null;
@@ -87,4 +79,6 @@ public class ChefPompier {
 	public boolean getSimulationOver() {
 		return this.simulationOver;
 	}
+	
+	public abstract Robot getRobotPret(Case caseIncendie);
 }

@@ -25,10 +25,10 @@ public class Path {
 	public double getPathLength() {
 		double length = 0;
 		Node first = listNodes.get(0);
-		
 		for (int i = 1; i < listNodes.size(); i++) {
 			Node second = listNodes.get(i);
 			length += first.distanceTo(second);
+			first = second;
 		}
 		return length;
 	}
@@ -41,5 +41,14 @@ public class Path {
 		}
 		
 		return newPath;
+	}
+	
+	@Override
+	public String toString() {
+		String result = "";
+		for (Node node : this.getPath()) {
+			result += node.toString() + " --> ";
+		}
+		return result;
 	}
 }
