@@ -3,7 +3,7 @@ package robots;
 import io.Case;
 import io.Carte;
 import io.NatureTerrain;
-import io.Simulateur;
+
 
 public class RobotAPattes extends RobotTerrestre {
 	

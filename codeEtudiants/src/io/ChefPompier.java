@@ -3,15 +3,13 @@ import robots.Robot;
 import java.lang.Thread;
 public class ChefPompier {
 	private Simulateur simu;
-	private DonneesSimulation jeuDeDonnees;
 	
-	public ChefPompier(Simulateur simu, DonneesSimulation jeuDeDonnees) {
-		this.jeuDeDonnees = jeuDeDonnees;
+	public ChefPompier(Simulateur simu) {
 		this.simu = simu;
 	}
 	
 	private boolean feuTousEteind() {
-		for(Incendie incendie: jeuDeDonnees.getIncendies()) {
+		for(Incendie incendie: simu.getJeuDeDonnees().getIncendies()) {
 			if(incendie.getTraite() != Traitement.eteind) {
 				return false;
 			}
@@ -20,7 +18,7 @@ public class ChefPompier {
 	}
 
 	private Incendie resteFeu() {
-		for (Incendie incendie : jeuDeDonnees.getIncendies()) {
+		for (Incendie incendie : simu.getJeuDeDonnees().getIncendies()) {
 			if (incendie.getEauNecessaire() != 0 && incendie.getTraite() == Traitement.rien) {
 				incendie.setTraite(Traitement.traite);
 				return incendie;
@@ -30,7 +28,7 @@ public class ChefPompier {
 	}
 	
 	private Robot getRobotPret(Case caseIncendie) {
-		for (Robot robot : jeuDeDonnees.getRobots()) {
+		for (Robot robot : simu.getJeuDeDonnees().getRobots()) {
 			if (!robot.getOccupied() && (robot.existsPathTo(caseIncendie) || robot.getPosition().equal(caseIncendie))) {
 				return robot;
 			}
@@ -65,5 +63,6 @@ public class ChefPompier {
 				incendieATraite = resteFeu();
 			}
 		}
-	}	
+		System.out.println("fin");
+	}
 }

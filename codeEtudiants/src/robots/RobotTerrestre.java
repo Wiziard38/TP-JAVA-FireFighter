@@ -1,7 +1,7 @@
 package robots;
 
 
-import org.graphstream.graph.Path;
+import graph.Dijkstra;
 
 import io.Carte;
 import io.Case;
@@ -15,24 +15,27 @@ public abstract class RobotTerrestre extends Robot {
 	
 	
 	@Override
-	public Case getClosestWater(Simulateur simulateur, Case currentPos) {
-		double min_val = Double.POSITIVE_INFINITY;
-		Path best_path = null;
+	public Case getClosestWater(Simulateur simulateur, Case currentPos) {	
+		double min_val = Long.MAX_VALUE;
+		Case closestShore = null;
+		
+		Dijkstra dijkstra = new Dijkstra();
+		dijkstra.init(this.getGraph());
+		dijkstra.setSource(currentPos);
+		dijkstra.compute();
 		
 		for (Case shoreTile : simulateur.getJeuDeDonnees().getCasesVoisins()) {
-			Path path = this.getShortestPath(currentPos, shoreTile);
-			double current_time = this.getTimeFromPath(path);
-			if (current_time < min_val) {
-				min_val = current_time;
-				best_path = path;
+			
+			if (dijkstra.getShortestTime(shoreTile) < min_val) {
+				min_val = dijkstra.getShortestTime(shoreTile);
+				closestShore = shoreTile;
 			}
 		}
-		
-		if (best_path == null) {
-			throw new IllegalArgumentException("Aucune case d'eau accessible");
+
+		if (closestShore == null) {
+			return null;
 		}
-		Object[] array = best_path.peekNode().getAttribute("xy");
-		Case caseEau = simulateur.getJeuDeDonnees().getCarte().getCase((int) array[0], (int) array[1]);
-		return caseEau;
+		
+		return closestShore;
 	}
 }

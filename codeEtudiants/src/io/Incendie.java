@@ -2,13 +2,15 @@ package io;
 import robots.Robot;
 
 public class Incendie {
-	private Case position;
+	private final Case position;
 	private long eauNecessaire;
+	private final long eauNecessaireRestart;
 	private Traitement traite;
 	private Robot robotQuiTraite;
 	
 	public Incendie(Case pos, long eau) {
 		this.eauNecessaire = eau;
+		this.eauNecessaireRestart = this.eauNecessaire;
 		this.position = pos;
 		this.traite = Traitement.rien;
 		this.robotQuiTraite = null;
@@ -37,11 +39,15 @@ public class Incendie {
 		return this.eauNecessaire;
 	}
 	
-	public void setPosition(Case newPos) {
-		this.position = newPos;
-	}
+//	public void setPosition(Case newPos) {
+//		this.position = newPos;
+//	}
 	
 	public void setEauNecessaire(long newQuant) {
 		this.eauNecessaire = newQuant;
+	}
+	
+	public void EauNecessaireRestart() {
+		this.setEauNecessaire(this.eauNecessaireRestart);
 	}
 }

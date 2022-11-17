@@ -1,4 +1,8 @@
-package io;
+package evenements;
+import io.Carte;
+import io.Case;
+import io.Direction;
+import io.NatureTerrain;
 import robots.Robot;
 
 public class RemplissageReservoir extends Evenement {
@@ -49,7 +53,7 @@ public class RemplissageReservoir extends Evenement {
 	@Override
 	public void execute() {
 		if (peutSeRemplir()){
-			System.out.println("Remplissage terminé!");
+			// System.out.println("Remplissage terminé!");
 			robot.setEauRestante(this.EauRempli);
 		}
 	}
