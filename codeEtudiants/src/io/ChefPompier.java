@@ -76,6 +76,6 @@ public class ChefPompier {
 				incendieATraite = resteFeu();
 			}
 		}
-		System.out.println("fin");
+		System.out.println("Tous les incendies sont eteints");
 	}
 }

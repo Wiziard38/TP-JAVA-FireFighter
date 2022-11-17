@@ -132,26 +132,21 @@ public class Simulateur implements Simulable{
 	public void next() {
 		/**next éxecute les prochains événement dans la liste des événements
 		 * dont la date est inférieur à la date actuel du simulateur*/
-		incrementeDate();
-		boolean flag;
-		if (this.listEvenement.getPremier() != null) {
-			flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation;
-			while (flag) {
-				this.listEvenement.getPremier().execute();
-				this.listEvenement.suppPremier();
-				if (this.listEvenement.getPremier() != null) {
-					flag = this.listEvenement.getPremier().getDate() <= this.dateSimulation; 
-				}
-				else {
-					flag = false;
-				}
-			}
+		incrementeDate();		
+		
+		if (this.listEvenement.getPremier() != null && this.listEvenement.getPremier().getDate() <= this.dateSimulation) {
+			
+			this.listEvenement.getPremier().execute();
+			this.listEvenement.suppPremier();
+				
 		}
 		draw(this.jeuDeDonnees);
+		
 	}
 	
 	
 	public void restart() {
+		this.dateSimulation = 0;
 		/**permet de restart la simulation pour la revoir*/
 		for (Robot robot : this.jeuDeDonnees.getRobots()) {
 			robot.RestartPosition();
@@ -162,15 +157,18 @@ public class Simulateur implements Simulable{
 			incendie.setTraite(Traitement.rien);
 		}
 		
+		//drawRobot(this.jeuDeDonnees.getRobots()[0]);
+
+		
 //		if (this.chef.getClass().getTypeName() == "ChefPompier") {
-			this.chooseChef(0);
+		this.chooseChef(0);
 //		}
 		
-		System.out.println("done");
-		System.out.println(this.jeuDeDonnees.getIncendies()[0].getEauNecessaire());
-		System.out.println(this.jeuDeDonnees.getRobots()[0].getPosition());
+		System.out.println("Remise a zero de la simulation");
+				
 		draw(this.jeuDeDonnees);
-		this.chef.start();
+		
+		//this.chef.start();
 	}
 
 	private void draw(DonneesSimulation jeuDeDonnes) {
