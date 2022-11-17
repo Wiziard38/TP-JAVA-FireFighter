@@ -19,7 +19,7 @@ import robots.Robot;
 
 
 public class TestSimulateur {
-
+	/** Fonction de test*/
 	public static void main(String[] args) {
 		System.out.println(System.getProperty("user.dir")+"/codeEtudiants/");
         // creer la fenetre graphique dans laquelle dessiner

@@ -1,6 +1,7 @@
 package io;
 
 public class Case {
+	/** Cette classe implémente une case de la carte de la simulation*/
 	private int ligne;
 	private int colonne;
 	NatureTerrain nature;
@@ -23,6 +24,7 @@ public class Case {
 	}
 	
 	public boolean equal(Case caseATester) {
+		/** Permet de tester si deux cases sont les mêmes */
 		return this.ligne == caseATester.getLigne() & this.colonne == caseATester.getColonne();
 	}
 	

@@ -16,36 +16,20 @@ import robots.RobotDrone;
 /**
  * Lecteur de cartes au format spectifié dans le sujet.
  * Les données sur les cases, robots puis incendies sont lues dans le fichier,
- * puis simplement affichées.
- * A noter: pas de vérification sémantique sur les valeurs numériques lues.
- *
- * IMPORTANT:
- *
- * Cette classe ne fait que LIRE les infos et les afficher.
- * A vous de modifier ou d'ajouter des méthodes, inspirées de celles présentes
- * (ou non), qui CREENT les objets au moment adéquat pour construire une
- * instance de la classe DonneesSimulation à partir d'un fichier.
- *
- * Vous pouvez par exemple ajouter une méthode qui crée et retourne un objet
- * contenant toutes les données lues:
- *    public static DonneesSimulation creeDonnees(String fichierDonnees);
- * Et faire des méthode creeCase(), creeRobot(), ... qui lisent les données,
- * créent les objets adéquats et les ajoutent ds l'instance de
- * DonneesSimulation.
+ * puis ajouté au jeu de données
  */
 public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche le contenu d'un fichier de donnees (cases,
-     * robots et incendies).
-     * Ceci est méthode de classe; utilisation:
+     * Lit le contenu d'un fichier de donnees (cases,
+     * robots et incendies) et crée un jeu de données en conséquence.
+     * Ceci est méthode de classe; utilisation:affiche
      * LecteurDonnees.lire(fichierDonnees)
      * @param fichierDonnees nom du fichier à lire
      */
     public static DonneesSimulation lire(String fichierDonnees)
         throws FileNotFoundException, DataFormatException {
-        System.out.println("\n == Lecture du fichier" + fichierDonnees);
         LecteurDonnees lecteur = new LecteurDonnees(fichierDonnees);
         Carte carte = lecteur.lireCarte();
         Incendie incendies[] = lecteur.lireIncendies(carte);
@@ -53,13 +37,7 @@ public class LecteurDonnees {
         DonneesSimulation jeuDeDonnees = new DonneesSimulation(carte, incendies.length, incendies, robots.length, robots); 
         scanner.close();
         return jeuDeDonnees;
-        //System.out.println("\n == Lecture terminee");
     }
-
-
-
-
-    // Tout le reste de la classe est prive!
 
     private static Scanner scanner;
 
@@ -74,7 +52,7 @@ public class LecteurDonnees {
     }
 
     /**
-     * Lit et affiche les donnees de la carte.
+     * Lit etretourne les donnees de la carte.
      * @throws ExceptionFormatDonnees
      */
     private Carte lireCarte() throws DataFormatException {
@@ -104,20 +82,14 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees d'une case.
+     * Lit et retourne les donnees d'une case.
      */
     private Case lireCase(int lig, int col) throws DataFormatException {
         ignorerCommentaires();
         String chaineNature = new String();
-        //		NatureTerrain nature;
-
         try {
             chaineNature = scanner.next();
             NatureTerrain nature = NatureTerrain.valueOf(chaineNature);
-            // si NatureTerrain est un Enum, vous pouvez recuperer la valeur
-            // de l'enum a partir d'une String avec:
-            //			NatureTerrain nature = NatureTerrain.valueOf(chaineNature);
-
             verifieLigneTerminee();
             return new Case(lig,col,nature);
 
@@ -129,14 +101,13 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees des incendies.
+     * Lit et retourne les donnees des incendies.
      */
     private Incendie[] lireIncendies(Carte carte) throws DataFormatException {
         ignorerCommentaires();
         try {
             int nbIncendies = scanner.nextInt();
             Incendie incendies[] = new Incendie[nbIncendies];
-            System.out.println("Nb d'incendies = " + nbIncendies);
             for (int i = 0; i < nbIncendies; i++) {
                 Incendie incendie = lireIncendie(i, carte);
                 incendies[i] = incendie;
@@ -151,7 +122,7 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees du i-eme incendie.
+     * Lit et retourne les donnees du i-eme incendie.
      * @param i
      */
     private Incendie lireIncendie(int i, Carte carte) throws DataFormatException {
@@ -178,7 +149,7 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees des robots.
+     * Lit et retourne les donnees des robots.
      */
     private Robot[] lireRobots(Carte carte) throws DataFormatException {
         ignorerCommentaires();
@@ -199,7 +170,7 @@ public class LecteurDonnees {
 
 
     /**
-     * Lit et affiche les donnees du i-eme robot.
+     * Lit et retourne les donnees du i-eme robot.
      * @param i
      */
     private Robot lireRobot(int i, Carte carte) throws DataFormatException {
@@ -210,11 +181,7 @@ public class LecteurDonnees {
             int col = scanner.nextInt();
             Case caseInitRobot = carte.getCase(lig, col);
             String type = scanner.next();
-            
-            // lecture eventuelle d'une vitesse du robot (entier)
-            System.out.print("; \t vitesse = ");
-            String s = scanner.findInLine("(\\d+)");	// 1 or more digit(s) ?
-            // pour lire un flottant:    ("(\\d+(\\.\\d+)?)");
+            String s = scanner.findInLine("(\\d+)");
             
             if (s != null) {
                 vitesse = Integer.parseInt(s);
