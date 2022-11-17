@@ -1,5 +1,7 @@
 package io;
 
+import donnees.Case;
+import donnees.TypeChefPompier;
 import robots.Robot;
 
 /**C'est la stratégie évoluée où le chef pompier assigne à un feu le robot qui mettera le plus proche*/

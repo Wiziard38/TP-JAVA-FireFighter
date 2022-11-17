@@ -1,4 +1,4 @@
-package io;
+package donnees;
 
 public enum NatureTerrain {
 	EAU,

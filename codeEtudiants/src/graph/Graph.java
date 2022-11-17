@@ -1,7 +1,9 @@
 package graph;
 
-import io.Case;
 import java.util.Set;
+
+import donnees.Case;
+
 import java.util.HashSet;
 
 /** Un Graph est une class permettant de représenter le graphe d'une carte selon la représentation d'un robot. 

@@ -1,4 +1,4 @@
-package io;
+package donnees;
 
 import robots.Robot;
 
@@ -8,14 +8,14 @@ public class Incendie {
 	private final Case position;
 	private long eauNecessaire;
 	private final long eauNecessaireRestart;
-	private Traitement traite;
+	private TraitementIncendieEtat traite;
 	private Robot robotQuiTraite;
 	
 	public Incendie(Case pos, long eau) {
 		this.eauNecessaire = eau;
 		this.eauNecessaireRestart = this.eauNecessaire;
 		this.position = pos;
-		this.traite = Traitement.rien;
+		this.traite = TraitementIncendieEtat.rien;
 		this.robotQuiTraite = null;
 	}
 	
@@ -27,10 +27,10 @@ public class Incendie {
 		this.robotQuiTraite = robot;
 	}
 	
-	public Traitement getTraite() {
+	public TraitementIncendieEtat getTraite() {
 		return this.traite ;
 	}
-	public void setTraite(Traitement val) {
+	public void setTraite(TraitementIncendieEtat val) {
 		this.traite = val;
 	}
 	

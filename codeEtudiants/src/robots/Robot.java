@@ -3,6 +3,12 @@ package robots;
 import io.*;
 import graph.*;
 import java.util.List;
+
+import donnees.Carte;
+import donnees.Case;
+import donnees.Direction;
+import donnees.Incendie;
+import donnees.NatureTerrain;
 import evenements.*;
 
 /**Class mère de tous les différents types de robot, elle rassemble tout ce qui est 

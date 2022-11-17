@@ -1,8 +1,8 @@
 package robots;
 
-import io.Case;
-import io.Carte;
-import io.NatureTerrain;
+import donnees.Carte;
+import donnees.Case;
+import donnees.NatureTerrain;
 
 /**RobotDrone est un type particulier de robot*/
 public class RobotDrone extends RobotAerien {

@@ -1,10 +1,9 @@
 package robots;
 
 
+import donnees.Carte;
+import donnees.Case;
 import graph.Dijkstra;
-
-import io.Carte;
-import io.Case;
 import io.Simulateur;
 
 /**Robot terrestre est un type particulier de robots qui se déplacent sur terre*/

@@ -1,4 +1,4 @@
-package io;
+package donnees;
 
 /** Cette classe implémente une case de la carte de la simulation*/
 public class Case {

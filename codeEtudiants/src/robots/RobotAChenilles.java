@@ -1,8 +1,8 @@
 package robots;
 
-import io.Case;
-import io.Carte;
-import io.NatureTerrain;
+import donnees.Carte;
+import donnees.Case;
+import donnees.NatureTerrain;
 
 /**RobotAChenilles est un type particuluer de robot*/
 public class RobotAChenilles extends RobotTerrestre {

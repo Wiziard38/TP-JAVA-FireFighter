@@ -4,6 +4,12 @@ import evenements.ListEvenement;
 
 import java.io.FileNotFoundException;
 import java.util.zip.DataFormatException;
+
+import donnees.Carte;
+import donnees.DonneesSimulation;
+import donnees.Incendie;
+import donnees.TraitementIncendieEtat;
+import donnees.TypeChefPompier;
 import gui.*;
 import robots.Robot;
 
@@ -149,7 +155,7 @@ public class Simulateur implements Simulable{
 		}
 		for (Incendie incendie : this.jeuDeDonnees.getIncendies()) {
 			incendie.EauNecessaireRestart();
-			incendie.setTraite(Traitement.rien);
+			incendie.setTraite(TraitementIncendieEtat.rien);
 		}
 
 		listEvenement.flush();

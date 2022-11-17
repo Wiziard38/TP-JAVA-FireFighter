@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="codeEtudiants/src"/>
+	<classpathentry kind="lib" path="codeEtudiants/bin/gui.jar"/>
+	<classpathentry kind="lib" path="codeEtudiants/lib/gui.jar"/>
+	<classpathentry kind="output" path="codeEtudiants/src"/>
+</classpath>

@@ -1,4 +1,6 @@
 package io;
+import donnees.Case;
+import donnees.TypeChefPompier;
 import robots.Robot;
 
 /**C'est un chef pompier classique qui assigne un feu au premier robot pompier trouvé non occupé*/

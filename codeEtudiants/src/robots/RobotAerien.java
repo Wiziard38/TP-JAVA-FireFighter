@@ -1,9 +1,9 @@
 package robots;
 
 
+import donnees.Carte;
+import donnees.Case;
 import graph.Dijkstra;
-import io.Carte;
-import io.Case;
 import io.Simulateur;
 
 /**RobotAerien représente tous les robots qui se déplace dans le ciel*/

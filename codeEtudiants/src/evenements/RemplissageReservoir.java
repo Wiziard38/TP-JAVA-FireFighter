@@ -1,8 +1,8 @@
 package evenements;
-import io.Carte;
-import io.Case;
-import io.Direction;
-import io.NatureTerrain;
+import donnees.Carte;
+import donnees.Case;
+import donnees.Direction;
+import donnees.NatureTerrain;
 import robots.Robot;
 
 /**RemplissageReservoir permet à un robot de se remplir d'une certaine quantité d'eau*/

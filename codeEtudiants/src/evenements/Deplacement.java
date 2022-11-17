@@ -1,8 +1,8 @@
 package evenements;
 
-import io.Carte;
-import io.Case;
-import io.Direction;
+import donnees.Carte;
+import donnees.Case;
+import donnees.Direction;
 import robots.Robot;
 
 /**Deplacement est un événement qui permet de faire bouger un robot dans une direction*/

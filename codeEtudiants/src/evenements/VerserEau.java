@@ -1,5 +1,5 @@
 package evenements;
-import io.Incendie;
+import donnees.Incendie;
 import robots.Robot;
 
 /** Evénement qui permet à un robot de verser une certaine quantité d'eau*/

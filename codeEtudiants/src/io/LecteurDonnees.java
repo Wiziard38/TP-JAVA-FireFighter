@@ -4,6 +4,11 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.DataFormatException;
 
+import donnees.Carte;
+import donnees.Case;
+import donnees.DonneesSimulation;
+import donnees.Incendie;
+import donnees.NatureTerrain;
 import robots.Robot;
 import robots.RobotAChenilles;
 import robots.RobotAPattes;

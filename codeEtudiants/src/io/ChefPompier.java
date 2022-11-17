@@ -1,4 +1,8 @@
 package io;
+import donnees.Case;
+import donnees.Incendie;
+import donnees.TraitementIncendieEtat;
+import donnees.TypeChefPompier;
 import robots.Robot;
 
 /**ChefPompier implemente un un chef pompier générale sans stratégie, elle est a définir dans des classes filles*/
@@ -25,7 +29,7 @@ public abstract class ChefPompier {
 	private boolean feuTousEteind() {
 		
 		for(Incendie incendie: simu.getJeuDeDonnees().getIncendies()) {
-			if(incendie.getTraite() != Traitement.eteind) {
+			if(incendie.getTraite() != TraitementIncendieEtat.eteind) {
 				return false;
 			}
 		}
@@ -38,8 +42,8 @@ public abstract class ChefPompier {
 	private Incendie resteFeu() {
 		
 		for (Incendie incendie : simu.getJeuDeDonnees().getIncendies()) {
-			if (incendie.getEauNecessaire() != 0 && incendie.getTraite() == Traitement.rien) {
-				incendie.setTraite(Traitement.traite);
+			if (incendie.getEauNecessaire() != 0 && incendie.getTraite() == TraitementIncendieEtat.rien) {
+				incendie.setTraite(TraitementIncendieEtat.traite);
 				return incendie;
 			}
 		}
@@ -58,8 +62,8 @@ public abstract class ChefPompier {
 				 * Si un incendie est dans l'état traite mais sans robot qui s'en occupe il y a un
 				 * problème et donc on repasse le feu dans l'état "rien" pour s'en occupé ensuite
 				 */
-				if(incendie.getTraite() == Traitement.traite && incendie.getRobotQuiTraite() == null) {
-					incendie.setTraite(Traitement.rien);
+				if(incendie.getTraite() == TraitementIncendieEtat.traite && incendie.getRobotQuiTraite() == null) {
+					incendie.setTraite(TraitementIncendieEtat.rien);
 				}
 			}
 			

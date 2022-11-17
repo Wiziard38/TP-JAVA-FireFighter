@@ -1,8 +1,8 @@
 package robots;
 
-import io.Case;
-import io.Carte;
-import io.NatureTerrain;
+import donnees.Carte;
+import donnees.Case;
+import donnees.NatureTerrain;
 
 /**RobotARoues est un type particulier de robot*/
 public class RobotARoues extends RobotTerrestre {

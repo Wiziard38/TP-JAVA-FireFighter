@@ -6,9 +6,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import io.Case;
-import io.Carte;
-import io.Direction;
+
+import donnees.Carte;
+import donnees.Case;
+import donnees.Direction;
 
 /** Class permettant d'implenter l'algorithme de Dijkstra.
  *  Cette résolution s'appuie sur un graph, donné par la class Graph.
