@@ -21,24 +21,44 @@
 #   -classpath : repertoire dans lequel sont cherches les .class deja compiles
 #   -sourcepath : repertoire dans lequel sont cherches les .java (dependances)
 
-all: testInvader testLecture
+JFLAGS = -g
+JC = javac
+JVM = java
+.SUFFIXES: .java .class
 
-testInvader:
-	javac -d bin -classpath bin/gui.jar -sourcepath src src/TestInvader.java
+.java.class:
+	$(JC) $(JFLAGS) $*.java
 
-testLecture:
-	javac -d bin -sourcepath src src/TestLecteurDonnees.java
+CLASSES = \
+		src/donnees/Carte.java src/donnees/Case.java src/donnees/Direction.java src/donnees/DonneesSimulation.java \
+		src/donnees/Incendie.java src/donnees/NatureTerrain.java src/donnees/TraitementIncendieEtat.java src/donnees/TypeChefPompier.java \
+		src/evenements/Deplacement.java src/evenements/Evenement.java src/evenements/Fini.java src/evenements/ListEvenement.java \
+		src/evenements/RemplissageReservoir.java src/evenements/VerserEau.java \
+		src/graph/Dijkstra.java src/graph/Graph.java src/graph/Node.java src/graph/Path.java src/graph/ResultatsPathFinder.java \
+		src/io/ChefPompier.java src/io/ChefPompierMaster.java src/io/ChefPompierSimple.java src/io/LecteurDonnees.java \
+		src/io/Simulateur.java src/TestSimulateur.java \
+		src/robots/Robot.java src/robots/RobotAChenilles.java src/robots/RobotAPattes.java src/robots/RobotDrone.java \
+		src/robots/RobotARoues.java src/robots/RobotAerien.java src/robots/RobotTerrestre.java src/robots/RobotType.java
 
-# Execution:
-# on peut taper directement la ligne de commande :
-#   > java -classpath bin:bin/gui.jar TestInvader
-# ou bien lancer l'execution en passant par ce Makefile:
-#   > make exeInvader
-exeInvader: 
-	java -classpath bin:bin/gui.jar TestInvader
+MAIN = TestSimulateur
 
-exeLecture: 
-	java -classpath bin TestLecteurDonnees cartes/carteSujet.map
+CLASSPATH = bin/gui.jar
+SOURCEPATH = src
+DESTINATIONPATH = bin
+DESTINATIONPATH2 = bin:bin/gui.jar
+
+default: classes
+
+classes: $(CLASSES:.java=.class)
+
+%.class: %.java
+	$(JC) -d $(DESTINATIONPATH)/. -classpath $(CLASSPATH) -sourcepath $(SOURCEPATH) $<
+
+all: $(classes)
+
+run:
+	$(JVM) -classpath bin:bin/gui.jar TestSimulateur
 
 clean:
-	rm -rf bin/*.class
+	$(RM) *.class
+
